@@ -82,15 +82,14 @@ def add_test_user_and_data():
 
 
 # A deck, with a title and description.
-now = lambda: datetime.utcnow()
 db.define_table(
     "deck",
     Field("author", "reference auth_user"),  # User ID.
     Field("title", "string"),                # The name of the deck.
     Field("description", "string"),          # A description of the deck.
     Field("public", "boolean"),              # Whether the deck is public.
-    Field("created_on", "datetime", default=now),
-    Field("modified_on", "datetime", default=now)
+    Field("created", "datetime", default=lambda: datetime.utcnow()),
+    Field("modified", "datetime", default=lambda: datetime.utcnow())
 )
 
 # An individual card, with a front and back side.
@@ -101,7 +100,22 @@ db.define_table(
     Field("index", "integer"),           # The card's place in the deck.
     Field("front", "string"),            # The content on the card's front.
     Field("back", "string"),             # The content on the card's back.
-    Field("difficulty", "string")        # The difficulty of the card.
+)
+
+# Users can mark cards with difficulties.
+db.define_table(
+    "difficulty",
+    Field("user_id", "reference auth_user"),
+    Field("deck_id", "reference deck"),
+    Field("card_id", "reference card"),
+    Field("difficulty", "string")             # The difficulty of the card.
+)
+
+# Decks can have tags.
+db.define_table(
+    "tag",
+    Field("deck_id", "reference deck"),
+    Field("tag", "string")
 )
 
 # A user's favorite decks (many-to-many table).
