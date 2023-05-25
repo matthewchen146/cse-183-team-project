@@ -58,21 +58,18 @@ def add_test_user_and_data():
             index=1,
             front="hola",
             back="hello",
-            difficulty="easy"
         )
         test_card_2 = dict(
             deck_id=deck_id,
             index=2,
             front="good morning",
             back="buenos dias",
-            difficulty="medium"
         )
         test_card_3 = dict(
             deck_id=deck_id,
             index=3,
             front="Donde está el baño?",
             back="Where is the bathroom?",
-            difficulty="hard"
         )
         db.card.insert(**test_card_1)
         db.card.insert(**test_card_2)
