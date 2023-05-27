@@ -1,8 +1,8 @@
-import test from './test.js';
+import Test from './test.js';
 
 export default await {
     components: {
-        test
+        Test
     },
     data() {
         return {}

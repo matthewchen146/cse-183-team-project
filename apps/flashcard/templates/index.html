@@ -3,7 +3,20 @@
 <div class="section" id="vue-target" v-cloak></div>
 
 [[block page_scripts]]
-<script>
+<script type="module">
+
+  import App from '[[=vue_root]]'
+
+  async function init() {
+
+    const { createApp } = Vue;
+
+    const app = createApp(App);
+
+    app.mount('#vue-target');
+  }
+
+  init();
+
 </script>
-<script src="js/index.js" type="module"></script>
 [[end]]

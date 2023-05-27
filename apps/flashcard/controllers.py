@@ -1,18 +1,4 @@
 """
-This file defines actions, i.e. functions the URLs are mapped into
-The @action(path) decorator exposed the function at URL:
-
-    http://127.0.0.1:8000/{app_name}/{path}
-
-If app_name == '_default' then simply
-
-    http://127.0.0.1:8000/{path}
-
-If path == 'index' it can be omitted:
-
-    http://127.0.0.1:8000/
-
-The path follows the bottlepy syntax.
 
 @action.uses('generic.html')  indicates that the action uses the generic.html template
 @action.uses(session)         indicates that the action uses the session
@@ -33,7 +19,9 @@ from .common import db, session, T, cache, auth, logger, authenticated, unauthen
 @action("index")
 @action.uses("index.html", auth, T)
 def index():
-    user = auth.get_user()
-    message = T("Hello {first_name}".format(**user) if user else "Hello")
-    actions = {"allowed_actions": auth.param.allowed_actions}
-    return dict(message=message, actions=actions)
+    # user = auth.get_user()
+    # message = T("Hello {first_name}".format(**user) if user else "Hello")
+    # actions = {"allowed_actions": auth.param.allowed_actions}
+    return dict(
+        vue_root = './js/components/app.js'
+    )
