@@ -1,5 +1,5 @@
 import App from './components/App.js'
-import test from './components/test.js'
+import test from './components/Test.js'
 
 let app;
 
