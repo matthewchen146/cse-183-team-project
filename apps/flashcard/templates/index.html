@@ -3,6 +3,14 @@
 <div class="section" id="vue-target" v-cloak></div>
 
 [[block page_scripts]]
+<script>
+  const rootUrl = window.location.origin + '/flashcard/';
+
+  function urlFromRoot(subPath) {
+    return rootUrl + subPath
+  }
+
+</script>
 <script type="module">
 
   import App from '[[=vue_root]]'
@@ -11,7 +19,12 @@
 
     const { createApp } = Vue;
 
-    const app = createApp(App);
+    const app = createApp({
+      components: {
+        App
+      },
+      template: `<div class="columns is-mobile is-centered"><app class="column is-two-thirds"></app></div>`
+    });
 
     app.mount('#vue-target');
   }

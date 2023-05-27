@@ -17,11 +17,22 @@ from .common import db, session, T, cache, auth, logger, authenticated, unauthen
 
 
 @action("index")
-@action.uses("index.html", auth, T)
+@action.uses("index.html", auth)
 def index():
-    # user = auth.get_user()
-    # message = T("Hello {first_name}".format(**user) if user else "Hello")
-    # actions = {"allowed_actions": auth.param.allowed_actions}
+    
+    
+
     return dict(
-        vue_root = './js/components/app.js'
+        vue_root = './js/components/home.js'
+    )
+
+
+@action("decks")
+@action.uses("index.html", auth)
+def index():
+    
+    
+
+    return dict(
+        vue_root = './js/components/test.js'
     )
