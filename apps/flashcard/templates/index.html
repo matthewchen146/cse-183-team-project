@@ -10,6 +10,15 @@
     return rootUrl + subPath
   }
 
+  async function loadHtml(path) {
+    try {
+      return (await axios.get(path)).data
+    } catch (error) {
+      console.error(`loadHtml "${path}" error:`, error)
+      return `<div>Error loading HTML template from "${path}"</div>`
+    } 
+  }
+
 </script>
 <script type="module">
 

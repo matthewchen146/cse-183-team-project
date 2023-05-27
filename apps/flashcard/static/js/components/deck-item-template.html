@@ -1,0 +1,24 @@
+<div class="box">
+    <div class="columns">
+        <div class="column is-two-thirds">
+            <div class="is-flex is-align-items-center">
+                <a v-if="info.is_favorite !== undefined" @click="toggleFavorite()">
+                    <span class="icon is-small mr-2">
+                        <i :class="'fa-' + (info.is_favorite ? 'solid' : 'regular') + ' fa-star'"></i>
+                    </span>
+                </a>
+                <h2 class="subtitle" style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
+                    {{info.description}}
+                </h2>
+            </div>
+        </div>
+        <div class="column is-one-third">
+            <span class="is-pulled-right">Last Updated {{info.modified}}</span>
+        </div>
+    </div>
+    <div class="">
+        <div style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
+            {{info.description}}
+        </div>
+    </div>
+</div>

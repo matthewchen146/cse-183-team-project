@@ -14,5 +14,6 @@
 
     <input class="input block" type="text" placeholder="Find A Deck">
 
-    
+    <deck-item v-for="deck in decks" :info="deck" :key="deck.id"></deck-item>
+
 </div>

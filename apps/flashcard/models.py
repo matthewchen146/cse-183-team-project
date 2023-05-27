@@ -4,79 +4,10 @@ This file defines the database models
 
 from datetime import datetime
 
+from py4web.utils.populate import FIRST_NAMES, LAST_NAMES, IUP
+import random
 from .common import auth, db, Field
 from pydal.validators import *
-
-
-def add_test_user_and_data():
-    """
-    A testing function that adds a user "_test_user_1"
-    and his deck of Spanish cards.
-    """
-    # Only add this test user if he doesn't exist yet.
-    test_user_username = "_test_user_1"
-    test_user_firstname = "Test"
-    test_user_lastname = "User"
-    exists = db(db.auth_user.username == test_user_username).count()
-    if not exists:
-        print("Adding test user w/ test data.")
-        user = dict(
-            username=test_user_username,
-            email=test_user_username + "@example.com",
-            first_name=test_user_firstname,
-            last_name=test_user_lastname,
-            password=test_user_username
-        )
-        auth.register(user)
-
-        # Get this test user's ID.
-        user_id = (
-            db(
-                db.auth_user.username == test_user_username
-            ).select(
-                db.auth_user.id
-            ).as_list()[0]["id"]
-        )
-
-        # Add this user's Spanish deck.
-        test_deck = dict(
-            title="Spanish terms",
-            description="A list of Spanish terms for me to memorize.",
-            public=True,
-            author=user_id
-        )
-        db.deck.insert(**test_deck)
-
-        # Add three Spanish cards.
-        deck_id = db(
-            db.deck.author == user_id
-        ).select(
-            db.deck.id
-        ).as_list()[0]["id"]
-        test_card_1 = dict(
-            deck_id=deck_id,
-            index=1,
-            front="hola",
-            back="hello",
-        )
-        test_card_2 = dict(
-            deck_id=deck_id,
-            index=2,
-            front="good morning",
-            back="buenos dias",
-        )
-        test_card_3 = dict(
-            deck_id=deck_id,
-            index=3,
-            front="Donde está el baño?",
-            back="Where is the bathroom?",
-        )
-        db.card.insert(**test_card_1)
-        db.card.insert(**test_card_2)
-        db.card.insert(**test_card_3)
-    db.commit()
-    return
-
 
 # A deck, with a title and description.
 db.define_table(
@@ -122,8 +53,101 @@ db.define_table(
     Field("user_id", "reference auth_user")
 )
 
-# This adds a test user and data.
-# Uncomment if necessary.
-add_test_user_and_data()
+def add_test_user_and_data():
+    """
+    A testing function that adds a user "_test_user_1"
+    and his deck of Spanish cards.
+    """
+    # Only add this test user if he doesn't exist yet.
+    test_user_firstname = random.choice(FIRST_NAMES)
+    test_user_lastname = random.choice(LAST_NAMES)
+    test_user_username = "_" + test_user_firstname + "_" + test_user_lastname
+    exists = db(db.auth_user.username == test_user_username).count()
+
+    if exists:
+        return
+
+    print("Adding test user {username} w/ test data.".format(username=test_user_username))
+    user = dict(
+        username=test_user_username,
+        email=test_user_username + "@example.com",
+        first_name=test_user_firstname,
+        last_name=test_user_lastname,
+        password=test_user_username
+    )
+    user_id = auth.register(user)
+
+    # Get this test user's ID.
+    # user_id = (
+    #     db(
+    #         db.auth_user.username == test_user_username
+    #     ).select(
+    #         db.auth_user.id
+    #     ).as_list()[0]["id"]
+    # )
+
+    # Generate between 1 and 5 decks
+    for i in range(random.randint(1, 5)):
+        # Add this user's Spanish deck.
+        test_deck = dict(
+            title=" ".join(random.choices(list(IUP.keys()), k=3)),#"Spanish terms",
+            description=" ".join(random.choices(list(IUP.keys()), k=20)),#"A list of Spanish terms for me to memorize.",
+            public=True,
+            author=user_id
+        )
+        deck_id = db.deck.insert(**test_deck)
+
+        # Generate a random amount of cards for the deck
+        for j in range(random.randint(3, 10)):
+            db.card.insert(
+                deck_id=deck_id,
+                index=j,
+                front=" ".join(random.choices(list(IUP.keys()), k=2)),
+                back=" ".join(random.choices(list(IUP.keys()), k=11)),
+            )
+
+        # Add three Spanish cards.
+        # deck_id = db(
+        #     db.deck.author == user_id
+        # ).select(
+        #     db.deck.id
+        # ).as_list()[0]["id"]
+        
+        # test_card_1 = dict(
+        #     deck_id=deck_id,
+        #     index=1,
+        #     front="hola",
+        #     back="hello",
+        # )
+        # test_card_2 = dict(
+        #     deck_id=deck_id,
+        #     index=2,
+        #     front="good morning",
+        #     back="buenos dias",
+        # )
+        # test_card_3 = dict(
+        #     deck_id=deck_id,
+        #     index=3,
+        #     front="Donde está el baño?",
+        #     back="Where is the bathroom?",
+        # )
+        # db.card.insert(**test_card_1)
+        # db.card.insert(**test_card_2)
+        # db.card.insert(**test_card_3)
+    db.commit()
+    return
+
 
 db.commit()
+
+db(db.auth_user.username.startswith("_")).delete()
+# db(db.card).delete()
+# db(db.deck).delete()
+
+for i in range(10):
+    # This adds a test user and data.
+    # Uncomment if necessary.
+    add_test_user_and_data()
+    
+
+
