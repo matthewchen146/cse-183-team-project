@@ -1,7 +1,9 @@
 [[extend 'layout.html']]
 
-<div class="section">
-  <div class="vars">
-      [[=message]]
-  </div>
-</div>
+<div class="section" id="vue-target" v-cloak></div>
+
+[[block page_scripts]]
+<script>
+</script>
+<script src="js/index.js" type="module"></script>
+[[end]]
