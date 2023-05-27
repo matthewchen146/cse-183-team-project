@@ -1,9 +1,9 @@
-import Test from './Test.js';
+import test from './test.js';
 
 export default await (async () => {
     return {
         components: {
-            Test
+            test
         },
         data() {
             return {}
