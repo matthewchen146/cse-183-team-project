@@ -40,7 +40,8 @@ def add_test_user_and_data():
             title=" ".join(random.choices(list(IUP.keys()), k=3)),
             description=" ".join(random.choices(list(IUP.keys()), k=20)),
             public=True,
-            author=user_id
+            user_id=user_id,
+            author=test_user_username
         )
         deck_id = db.deck.insert(**test_deck)
 
@@ -88,10 +89,11 @@ def add_test_user_and_data():
 # A deck, with a title and description.
 db.define_table(
     "deck",
-    Field("author", "reference auth_user"),  # User ID.
-    Field("title", "string"),                # The name of the deck.
-    Field("description", "string"),          # A description of the deck.
-    Field("public", "boolean"),              # Whether the deck is public.
+    Field("user_id", "reference auth_user"),  # User ID.
+    Field("author", "string"),                # Author username.
+    Field("title", "string"),                 # The name of the deck.
+    Field("description", "string"),           # A description of the deck.
+    Field("public", "boolean"),               # Whether the deck is public.
     Field("created", "datetime", default=lambda: datetime.utcnow()),
     Field("modified", "datetime", default=lambda: datetime.utcnow())
 )
