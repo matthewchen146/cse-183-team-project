@@ -1,24 +1,27 @@
 <div class="box">
-    <div class="columns">
-        <div class="column is-two-thirds">
-            <div class="is-flex is-align-items-center">
-                <a v-if="info.is_favorite !== undefined" @click="toggleFavorite()">
-                    <span class="icon is-small mr-2">
-                        <i :class="'fa-' + (info.is_favorite ? 'solid' : 'regular') + ' fa-star'"></i>
-                    </span>
-                </a>
-                <h2 class="subtitle" style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
-                    {{info.title}}
-                </h2>
-            </div>
-        </div>
-        <div class="column is-one-third">
-            <span class="is-pulled-right">Last Updated {{info.modified}}</span>
-        </div>
+  <div class="columns">
+    <div class="column is-two-thirds">
+      <div class="is-flex">
+        <a v-if="info.is_favorite !== undefined" @click="toggleFavorite()">
+          <span class="icon is-small mr-2">
+            <i :class="'fa-' + (info.is_favorite ? 'solid' : 'regular') + ' fa-star'"></i>
+          </span>
+        </a>
+        <p class="title is-3" style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
+          {{info.title}}
+        </p>
+      </div>
+      <p class="subtitle is-6">
+        By {{info.author}}
+      </p>
     </div>
-    <div class="">
-        <div style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
-            {{info.description}}
-        </div>
+    <div class="column is-one-third">
+      <span class="is-pulled-right">Last updated: {{info.modified}}</span>
     </div>
+  </div>
+  <div class="">
+    <div style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
+      {{info.description}}
+    </div>
+  </div>
 </div>

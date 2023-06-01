@@ -4,6 +4,14 @@ from .common import auth, db, session
 
 
 #
+# GLOBALS
+#
+
+
+MAX_DECKS = 10
+
+
+#
 # VIEWS
 #
 
@@ -19,7 +27,7 @@ def index():
 
 # The decks page
 @action("decks")
-@action.uses("index.html", auth)
+@action.uses("index.html", auth, auth.user)
 def decks():
     return dict(
         vue_root='./js/components/test.js'
@@ -40,7 +48,6 @@ def process_deck(row):
                 (db.favorite.user_id == auth.user_id)
             ).count()
         )
-
     return row
 
 
@@ -53,18 +60,32 @@ def process_deck(row):
 @action("get_decks", method="GET")
 @action.uses(auth, db)
 def get_decks():
-
-    max_decks = 10
+    # Get search parameters from GET request.
+    # The 'search_string' is the search query; if blank, ignore.
+    # The 'search_mode' determines whether the user is searching
+    # for deck titles or deck authors.
     search_string = request.query.get('search')
-
+    search_mode = request.query.get('mode')
     decks = []
 
-    if search_string is None or len(search_string) == 0:
-        for row in db(db.deck.public == True).iterselect():
-            if len(decks) >= max_decks:
-                break
-            deck = process_deck(row)
-            decks.append(deck)
+    # The query that will be sent to the DAL.
+    # Get all public decks that match the current search string.
+    query = (
+        (db.deck.public == True)
+        if (search_string is None or len(search_string) == 0) else
+        (db.deck.public == True) & (
+            (db.deck.title.startswith(search_string))
+            if (search_mode == "title") else
+            (db.deck.author.startswith(search_string))
+        )
+    )
+
+    # Iterate through queried decks.
+    for row in db(query).iterselect(orderby=~db.deck.modified):
+        if len(decks) >= MAX_DECKS:
+            break
+        deck = process_deck(row)
+        decks.append(deck)
 
     return dict(
         decks=decks

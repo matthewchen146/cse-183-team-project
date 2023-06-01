@@ -7,30 +7,30 @@ export default await {
     data() {
         return {
             decksUrl: urlFromRoot('decks'),
-            decks: []
+            decks: [],
+            search: ""
         }
     },
     methods: {
         async getDecks() {
 
-            console.log("getting decks")
+            console.log("getting decks");
 
             try {
-                
-                const result = await axios.get(urlFromRoot('get_decks'), { params: { search: '' } });
+                // Make a GET request for decks depending on the search query and mode.
+                const search = this.search;
+                const mode = document.getElementById("mode").value;
+                const result = await axios.get(urlFromRoot('get_decks'), { params: { search: search, mode: mode } });
 
+                // Process results for display.
                 const decks = this.decks;
-                
                 const new_decks = result.data.decks;
-
                 new_decks.forEach(deck => {
                     deck.modified = Sugar.Date(deck.modified + "Z").relative()
                 });
-
                 decks.splice(0, decks.length, ...new_decks);
-
             } catch (error) {
-                console.error('getDecks error', error)
+                console.error('getDecks error:', error)
             }
         }
     },

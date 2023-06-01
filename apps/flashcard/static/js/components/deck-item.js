@@ -25,4 +25,4 @@ export default await {
         return {}
     },
     template: await loadHtml('./js/components/deck-item-template.html')
-};;
+};
