@@ -74,9 +74,9 @@ def get_decks():
         (db.deck.public == True)
         if (search_string is None or len(search_string) == 0) else
         (db.deck.public == True) & (
-            (db.deck.title.startswith(search_string))
+            (db.deck.title.contains(search_string))
             if (search_mode == "title") else
-            (db.deck.author.startswith(search_string))
+            (db.deck.author.contains(search_string))
         )
     )
 
