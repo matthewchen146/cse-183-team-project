@@ -3,7 +3,7 @@ This file defines the database models
 """
 import random
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from .common import auth, db, Field
 from py4web.utils.populate import FIRST_NAMES, LAST_NAMES, IUP
@@ -34,19 +34,25 @@ def add_test_user_and_data():
     user_id = auth.register(user)
 
     # Generate between 1 and 5 decks.
+    ts = datetime.utcnow()
     for _ in range(random.randint(1, 5)):
+        # Taken from the Assignment 5 starter code.
+        ts -= timedelta(seconds=random.uniform(60, 1000))
+
         # Add this deck into the database.
         test_deck = dict(
             title=" ".join(random.choices(list(IUP.keys()), k=3)),
             description=" ".join(random.choices(list(IUP.keys()), k=20)),
             public=True,
             user_id=user_id,
-            author=test_user_username
+            author=test_user_username,
+            created=ts,
+            modified=ts
         )
         deck_id = db.deck.insert(**test_deck)
 
         # Generate a random amount of cards for the deck.
-        for j in range(random.randint(3, 10)):
+        for j in range(random.randint(1, 10)):
             db.card.insert(
                 deck_id=deck_id,
                 index=j,
@@ -54,34 +60,13 @@ def add_test_user_and_data():
                 back=" ".join(random.choices(list(IUP.keys()), k=11)),
             )
 
-        # Add three Spanish cards.
-        # deck_id = db(
-        #     db.deck.author == user_id
-        # ).select(
-        #     db.deck.id
-        # ).as_list()[0]["id"]
-        
-        # test_card_1 = dict(
-        #     deck_id=deck_id,
-        #     index=1,
-        #     front="hola",
-        #     back="hello",
-        # )
-        # test_card_2 = dict(
-        #     deck_id=deck_id,
-        #     index=2,
-        #     front="good morning",
-        #     back="buenos dias",
-        # )
-        # test_card_3 = dict(
-        #     deck_id=deck_id,
-        #     index=3,
-        #     front="Donde está el baño?",
-        #     back="Where is the bathroom?",
-        # )
-        # db.card.insert(**test_card_1)
-        # db.card.insert(**test_card_2)
-        # db.card.insert(**test_card_3)
+        # Generate a few tags for the deck.
+        for j in range(random.randint(0, 5)):
+            db.tag.insert(
+                deck_id=deck_id,
+                tag=" ".join(random.choices(list(IUP.keys()), k=1))
+            )
+
     db.commit()
     return
 

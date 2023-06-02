@@ -40,7 +40,22 @@ def decks():
 
 
 def process_deck(row):
+    # Reformat the 'modified' entry.
     row['modified'] = row['modified'].isoformat()
+
+    # Get the number of cards associated with a deck.
+    row['num_cards'] = db(
+        db.card.deck_id == row.id
+    ).count()
+
+    # Get the tags associated with a deck.
+    tags = db(db.tag.deck_id == row.id).select(db.tag.tag).as_list()
+    if len(tags) > 0:
+        row['tags'] = [r["tag"] for r in tags]
+    else:
+        row['tags'] = []
+
+    # If signed in, display deck's favorited status by current user.
     if auth.get_user() != {}:
         row['is_favorite'] = bool(
             db(
@@ -84,8 +99,7 @@ def get_decks():
     for row in db(query).iterselect(orderby=~db.deck.modified):
         if len(decks) >= MAX_DECKS:
             break
-        deck = process_deck(row)
-        decks.append(deck)
+        decks.append(process_deck(row))
 
     return dict(
         decks=decks
