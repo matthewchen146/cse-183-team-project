@@ -1,62 +1,18 @@
 """
 This file defines the database models
 """
+import random
 
 from datetime import datetime
 
-from py4web.utils.populate import FIRST_NAMES, LAST_NAMES, IUP
-import random
 from .common import auth, db, Field
+from py4web.utils.populate import FIRST_NAMES, LAST_NAMES, IUP
 from pydal.validators import *
 
-# A deck, with a title and description.
-db.define_table(
-    "deck",
-    Field("author", "reference auth_user"),  # User ID.
-    Field("title", "string"),                # The name of the deck.
-    Field("description", "string"),          # A description of the deck.
-    Field("public", "boolean"),              # Whether the deck is public.
-    Field("created", "datetime", default=lambda: datetime.utcnow()),
-    Field("modified", "datetime", default=lambda: datetime.utcnow())
-)
-
-# An individual card, with a front and back side.
-# Multiple cards make up a deck (many-to-one table).
-db.define_table(
-    "card",
-    Field("deck_id", "reference deck"),  # The associated deck.
-    Field("index", "integer"),           # The card's place in the deck.
-    Field("front", "string"),            # The content on the card's front.
-    Field("back", "string"),             # The content on the card's back.
-)
-
-# Users can mark cards with difficulties.
-db.define_table(
-    "difficulty",
-    Field("user_id", "reference auth_user"),
-    Field("deck_id", "reference deck"),
-    Field("card_id", "reference card"),
-    Field("difficulty", "string")             # The difficulty of the card.
-)
-
-# Decks can have tags.
-db.define_table(
-    "tag",
-    Field("deck_id", "reference deck"),
-    Field("tag", "string")
-)
-
-# A user's favorite decks (many-to-many table).
-db.define_table(
-    "favorite",
-    Field("deck_id", "reference deck"),
-    Field("user_id", "reference auth_user")
-)
 
 def add_test_user_and_data():
     """
-    A testing function that adds a user "_test_user_1"
-    and his deck of Spanish cards.
+    A testing function that adds a user and test data.
     """
     # Only add this test user if he doesn't exist yet.
     test_user_firstname = random.choice(FIRST_NAMES)
@@ -67,7 +23,7 @@ def add_test_user_and_data():
     if exists:
         return
 
-    print("Adding test user {username} w/ test data.".format(username=test_user_username))
+    print(f"Adding test user {test_user_username} w/ test data.")
     user = dict(
         username=test_user_username,
         email=test_user_username + "@example.com",
@@ -77,27 +33,19 @@ def add_test_user_and_data():
     )
     user_id = auth.register(user)
 
-    # Get this test user's ID.
-    # user_id = (
-    #     db(
-    #         db.auth_user.username == test_user_username
-    #     ).select(
-    #         db.auth_user.id
-    #     ).as_list()[0]["id"]
-    # )
-
-    # Generate between 1 and 5 decks
-    for i in range(random.randint(1, 5)):
-        # Add this user's Spanish deck.
+    # Generate between 1 and 5 decks.
+    for _ in range(random.randint(1, 5)):
+        # Add this deck into the database.
         test_deck = dict(
-            title=" ".join(random.choices(list(IUP.keys()), k=3)),#"Spanish terms",
-            description=" ".join(random.choices(list(IUP.keys()), k=20)),#"A list of Spanish terms for me to memorize.",
+            title=" ".join(random.choices(list(IUP.keys()), k=3)),
+            description=" ".join(random.choices(list(IUP.keys()), k=20)),
             public=True,
-            author=user_id
+            user_id=user_id,
+            author=test_user_username
         )
         deck_id = db.deck.insert(**test_deck)
 
-        # Generate a random amount of cards for the deck
+        # Generate a random amount of cards for the deck.
         for j in range(random.randint(3, 10)):
             db.card.insert(
                 deck_id=deck_id,
@@ -138,16 +86,58 @@ def add_test_user_and_data():
     return
 
 
+# A deck, with a title and description.
+db.define_table(
+    "deck",
+    Field("user_id", "reference auth_user"),  # User ID.
+    Field("author", "string"),                # Author username.
+    Field("title", "string"),                 # The name of the deck.
+    Field("description", "string"),           # A description of the deck.
+    Field("public", "boolean"),               # Whether the deck is public.
+    Field("created", "datetime", default=lambda: datetime.utcnow()),
+    Field("modified", "datetime", default=lambda: datetime.utcnow())
+)
+
+# An individual card, with a front and back side.
+# Multiple cards make up a deck (many-to-one table).
+db.define_table(
+    "card",
+    Field("deck_id", "reference deck"),  # The associated deck.
+    Field("index", "integer"),           # The card's place in the deck.
+    Field("front", "string"),            # The content on the card's front.
+    Field("back", "string"),             # The content on the card's back.
+)
+
+# Users can mark cards with difficulties.
+db.define_table(
+    "difficulty",
+    Field("user_id", "reference auth_user"),
+    Field("deck_id", "reference deck"),
+    Field("card_id", "reference card"),
+    Field("difficulty", "string")             # The difficulty of the card.
+)
+
+# Decks can have tags.
+db.define_table(
+    "tag",
+    Field("deck_id", "reference deck"),
+    Field("tag", "string")
+)
+
+# A user's favorite decks (many-to-many table).
+db.define_table(
+    "favorite",
+    Field("deck_id", "reference deck"),
+    Field("user_id", "reference auth_user")
+)
+
 db.commit()
 
 db(db.auth_user.username.startswith("_")).delete()
 # db(db.card).delete()
 # db(db.deck).delete()
 
-for i in range(10):
+for _ in range(10):
     # This adds a test user and data.
     # Uncomment if necessary.
     add_test_user_and_data()
-    
-
-
