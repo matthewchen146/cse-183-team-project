@@ -1,6 +1,6 @@
 [[extend 'layout.html']]
 
-<div class="section" id="vue-target" v-cloak></div>
+<div id="vue-target" v-cloak></div>
 
 [[block page_scripts]]
 <script>
@@ -21,15 +21,21 @@
 
 </script>
 <script type="module">
-  import App from '[[=vue_root]]'
+  import Root from '[[=vue_root]]'
+  import App from './static/js/components/app.js'
   async function init() {
     const { createApp } = Vue;
 
     const app = createApp({
       components: {
+        Root,
         App
       },
-      template: `<div class="columns is-mobile is-centered"><app class="column is-two-thirds"></app></div>`
+      template: `
+      <app>
+        <root></root>
+      </app>
+      `
     });
 
     app.mount('#vue-target');

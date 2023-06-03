@@ -1,11 +1,13 @@
-import Test from './test.js';
-
 export default await {
     components: {
-        Test
     },
     data() {
-        return {}
+        return {
+            homeUrl: urlFromRoot(''),
+            // from global in layout.html
+            authUrls,
+            authUser
+        }
     },
-    template: `<div>Hello <test></test></div>`
+    template: await loadHtml('./static/js/components/app-template.html')
 }
