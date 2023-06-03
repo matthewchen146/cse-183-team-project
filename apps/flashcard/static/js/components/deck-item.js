@@ -9,7 +9,7 @@ export default await {
         async toggleFavorite() {
             try {
                 if (this.info.is_favorite !== undefined) {
-                    const result = await axios.post(urlFromRoot('set_favorite'), {
+                    const result = await axios.post('set_favorite', {
                         is_favorite: !this.info.is_favorite,
                         deck_id: this.info.id
                     });
@@ -24,5 +24,5 @@ export default await {
     data() {
         return {}
     },
-    template: await loadHtml('./js/components/deck-item-template.html')
+    template: await loadHtml('./static/js/components/deck-item-template.html')
 };

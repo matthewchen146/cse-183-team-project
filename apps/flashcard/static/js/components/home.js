@@ -20,7 +20,7 @@ export default await {
                 // Make a GET request for decks depending on the search query and mode.
                 const search = this.search;
                 const mode = document.getElementById("mode").value;
-                const result = await axios.get(urlFromRoot('get_decks'), { params: { search: search, mode: mode } });
+                const result = await axios.get('get_decks', { params: { search: search, mode: mode } });
 
                 // Process results for display.
                 const decks = this.decks;
@@ -41,5 +41,5 @@ export default await {
     mounted() {
         this.getDecks();
     },
-    template: await loadHtml('./js/components/home-template.html')
+    template: await loadHtml('./static/js/components/home-template.html')
 }

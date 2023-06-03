@@ -21,7 +21,7 @@ MAX_DECKS = 10
 @action.uses("index.html", auth)
 def index():
     return dict(
-        vue_root='./js/components/home.js'
+        vue_root='./static/js/components/home.js'
     )
 
 
@@ -30,7 +30,7 @@ def index():
 @action.uses("index.html", auth, auth.user)
 def decks():
     return dict(
-        vue_root='./js/components/test.js'
+        vue_root='./static/js/components/test.js'
     )
 
 
