@@ -16,12 +16,21 @@ MAX_DECKS = 10
 #
 
 
-# The home page.
+# The home (index) page.
 @action("index")
 @action.uses("generic.html", auth)
 def index():
     return dict(
         vue_root='./static/js/components/home.js'
+    )
+
+
+# The page to view an individual deck.
+@action("deck/<deck_id:int>")
+@action.uses("generic.html")
+def deck(deck_id):
+    return dict(
+        vue_root='./static/js/components/deck.js'
     )
 
 
@@ -39,8 +48,35 @@ def decks():
 #
 
 
+def get_decks_from_tag(tag):
+    # Gets decks tagged with a specific tag.
+    decks = db(db.tag.tag == tag).select(db.tag.deck_id).as_list()
+    if len(decks) > 0:
+        return [deck["deck_id"] for deck in decks]
+    return []
+
+
+def get_tags_from_deck(row):
+    # Gets tags associated with a deck.
+    tags = db(db.tag.deck_id == row.id).select(db.tag.tag).as_list()
+    if len(tags) > 0:
+        return [tag["tag"] for tag in tags]
+    return []
+
+
 def process_deck(row):
+    # Reformat the 'modified' entry.
     row['modified'] = row['modified'].isoformat()
+
+    # Get the number of cards associated with a deck.
+    row['num_cards'] = db(
+        db.card.deck_id == row.id
+    ).count()
+
+    # Get the tags associated with a deck.
+    row['tags'] = get_tags_from_deck(row)
+
+    # If signed in, display deck's favorited status by current user.
     if auth.get_user() != {}:
         row['is_favorite'] = bool(
             db(
@@ -70,22 +106,31 @@ def get_decks():
 
     # The query that will be sent to the DAL.
     # Get all public decks that match the current search string.
-    query = (
-        (db.deck.public == True)
-        if (search_string is None or len(search_string) == 0) else
-        (db.deck.public == True) & (
-            (db.deck.title.startswith(search_string))
-            if (search_mode == "title") else
-            (db.deck.author.startswith(search_string))
-        )
-    )
+    # Search depends on the search mode.
+    if search_string is None or len(search_string) == 0:
+        query = (db.deck.public == True)
+    else:
+        if search_mode == "title":
+            query = (
+                (db.deck.public == True) &
+                (db.deck.title.contains(search_string))
+            )
+        elif search_mode == "author":
+            query = (
+                (db.deck.public == True) &
+                (db.deck.author.contains(search_string))
+            )
+        else:
+            query = (
+                (db.deck.public == True) &
+                (db.deck.id.belongs(get_decks_from_tag(search_string)))
+            )
 
     # Iterate through queried decks.
     for row in db(query).iterselect(orderby=~db.deck.modified):
         if len(decks) >= MAX_DECKS:
             break
-        deck = process_deck(row)
-        decks.append(deck)
+        decks.append(process_deck(row))
 
     return dict(
         decks=decks

@@ -22,7 +22,9 @@ export default await {
         }
     },
     data() {
-        return {}
+        return {
+            deckUrl: urlFromRoot('deck/' + this.info.id)
+        }
     },
     template: await loadHtml('./static/js/components/deck-item-template.html')
 };

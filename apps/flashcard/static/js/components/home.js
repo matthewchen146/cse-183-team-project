@@ -12,10 +12,15 @@ export default await {
         }
     },
     methods: {
+        async clearSearch() {
+            try {
+                this.search = '';
+                this.getDecks();
+            } catch (error) {
+                console.error('clearSearch error:', error)
+            }
+        },
         async getDecks() {
-
-            console.log("getting decks");
-
             try {
                 // Make a GET request for decks depending on the search query and mode.
                 const search = this.search;
@@ -39,6 +44,7 @@ export default await {
         }
     },
     mounted() {
+        this.clearSearch();
         this.getDecks();
     },
     template: await loadHtml('./static/js/components/home-template.html')

@@ -12,17 +12,27 @@
     </div>
   </nav>
 
+  <!-- Search bar and associated buttons and menus. -->
   <div class="field has-addons">
+    <!-- Drop-down menu for search mode. -->
     <div class="control">
       <span class="select">
         <select name="mode" id="mode">
-          <option value="title">Title</option>
           <option value="author">Author</option>
+          <option value="tag">Tag</option>
+          <option selected="selected" value="title">Title</option>
         </select>
       </span>
     </div>
+
+    <!-- Search input bar. -->
     <div class="control is-expanded">
-      <input class="input block" type="text" placeholder="Search..." v-model="search">
+      <input class="input block" type="text" placeholder="Search..." v-model="search" v-on:keyup.enter="getDecks()">
+    </div>
+    <div class="control">
+      <button class="button is-info" v-on:click="clearSearch()">
+        <span> X </span>
+      </button>
     </div>
     <div class="control">
       <button class="button is-link" v-on:click="getDecks()">
@@ -31,6 +41,7 @@
     </div>
   </div>
 
+  <!-- Deck results, implemented as a custom Vue component. -->
   <deck-item v-for="deck in decks" :info="deck" :key="deck.id"></deck-item>
 
 </div>
