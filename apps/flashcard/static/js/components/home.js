@@ -8,7 +8,9 @@ export default await {
         return {
             decksUrl: urlFromRoot('decks'),
             decks: [],
-            search: ""
+            search: "",
+            searchTimeout: undefined,
+            searchTimeoutMs: 1000
         }
     },
     methods: {
@@ -21,6 +23,9 @@ export default await {
             }
         },
         async getDecks() {
+            // Clear the search timeout just in case it is still active (such as when pressing enter)
+            clearTimeout(this.searchTimeout);
+
             try {
                 // Make a GET request for decks depending on the search query and mode.
                 const search = this.search;
@@ -37,6 +42,14 @@ export default await {
             } catch (error) {
                 console.error('getDecks error:', error)
             }
+        },
+        resetSearchTimeout() {
+            // Resets the search timeout
+            clearTimeout(this.searchTimeout);
+            this.searchTimeout = setTimeout(() => {
+                // When the timeout finishes, get decks with the current search string
+                this.getDecks();
+            }, this.searchTimeoutMs);
         }
     },
     setup(props, context) {

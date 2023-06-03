@@ -27,7 +27,7 @@
 
     <!-- Search input bar. -->
     <div class="control is-expanded">
-      <input class="input block" type="text" placeholder="Search..." v-model="search" v-on:keyup.enter="getDecks()">
+      <input class="input block" type="text" placeholder="Search..." v-model="search" v-on:keyup.enter="getDecks()" @input="resetSearchTimeout()">
     </div>
     <div class="control">
       <button class="button is-info" v-on:click="clearSearch()">
