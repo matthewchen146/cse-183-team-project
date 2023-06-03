@@ -4,5 +4,5 @@ export default await {
       count: 0
     }
   },
-  template: await loadHtml('./js/components/test-template.html')
+  template: await loadHtml('./static/js/components/test-template.html')
 }

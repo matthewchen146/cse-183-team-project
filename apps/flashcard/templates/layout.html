@@ -1,66 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <base href="[[=URL('static')]]/">
+    <base href="[[=URL('flashcard')]]">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="data:image/x-icon;base64,AAABAAEAAQEAAAEAIAAwAAAAFgAAACgAAAABAAAAAgAAAAEAIAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAPAAAAAA=="/>
-    <link rel="stylesheet" href="css/bulma.css">
-    <!-- <link rel="stylesheet" href="css/meow.css"> -->
-    <link rel="stylesheet" href="fontawesome-free-6.4.0-web/css/all.css">
+    <link rel="stylesheet" href="static/css/bulma.css">
+    <link rel="stylesheet" href="static/fontawesome-free-6.4.0-web/css/all.css">
     [[block page_head]]<!-- individual pages can customize header here -->[[end]]
   </head>
   <body>
-    <!-- Navigation bar -->
-    <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
-      <div class="navbar-brand">
-        <a class="navbar-item" href="[[=URL('index')]]">
-          Flashcard
-          <!-- <img class="logo" width="150" src="images/site_icon.png"> -->
-        </a>
+    [[block before_vue]]
+    [[end]]
+    <div id="vue-target" v-cloak>
+      <app>
+        <!-- beginning of HTML inserted by extending template -->
+        [[include]]
+        <!-- end of HTML inserted by extending template -->
+      </app>
+    </div>
+    [[block after_vue]]
+    [[end]]
 
-
-        <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="the-navbar-menu"
-           onclick="this.classList.toggle('is-active');document.getElementById(this.dataset.target).classList.toggle('is-active');">
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-        </a>
-      </div>
-
-      <div id="the-navbar-menu" class="navbar-menu">
-        <div class="navbar-start">
-          [[block page_menu_items]]<!-- individual pages can add menu items here -->[[end]]
-        </div>
-
-        <div class="navbar-end">
-          <div class="navbar-item">
-            <div class="buttons">
-              [[if globals().get('user'):]]
-                <div class="navbar-item has-dropdown is-hoverable">
-                  <a class="navbar-link is-primary">
-                    [[=globals().get('user').get('username')]]
-                  </a>
-                  <div class="navbar-dropdown">
-                    <a class="navbar-item" href="[[=URL('auth/logout')]]">Logout</a>
-                    <a class="navbar-item" href="[[=URL('auth/profile')]]">Profile</a>
-                    <a class="navbar-item" href="[[=URL('auth/change_password')]]">Change Password</a></li>
-
-                  </div>
-                </div>
-              [[else:]]
-                <a class="button is-link" href="[[=URL('auth/register')]]">Sign up</a>
-                <a class="button is-success" href="[[=URL('auth/login')]]">Log in</a>
-              [[pass]]
-            </div>
-          </div>
-        </div>
-      </div>
-    </nav>
-
-    <!-- beginning of HTML inserted by extending template -->
-    [[include]]
-    <!-- end of HTML inserted by extending template -->
     <footer class="footer">
       <div class="content has-text-centered">
         Made with <a href="https://py4web.com">py4web</a>.
@@ -68,9 +29,69 @@
       </div>
     </footer>
   </body>
-  <script src="js/sugar.min.js"></script>
-  <script src="js/axios.min.js"></script>
-  <script src="js/vue.js"></script>
-  <script src="js/utils.js"></script>
+  <script src="static/js/sugar.min.js"></script>
+  <script src="static/js/axios.min.js"></script>
+  <script src="static/js/vue.js"></script>
+  <script src="static/js/utils.js"></script>
+  <script>
+    const authRegisterUrl = "[[=URL('auth/register')]]";
+    const authLoginUrl = "[[=URL('auth/login')]]";
+    const authLogoutUrl = "[[=URL('auth/logout')]]";
+    const authChangePasswordUrl = "[[=URL('auth/change_password')]]";
+
+    const authUrls = {
+      register: authRegisterUrl,
+      login: authLoginUrl,
+      logout: authLogoutUrl,
+      changePassword: authChangePasswordUrl
+    }
+    
+    let authUser = null;
+  </script>
+  [[if globals().get('user'):]]
+  <script>
+    authUser = {
+      username: "[[=globals().get('user').get('username')]]"
+    };
+  </script>
+  [[pass]]
+  <script>
+    const rootUrl = "[[=URL('flashcard')]]/";
+  
+    function urlFromRoot(subPath) {
+      return rootUrl + subPath
+    }
+  
+    async function loadHtml(path) {
+      try {
+        return (await axios.get(path)).data
+      } catch (error) {
+        console.error(`loadHtml "${path}" error:`, error)
+        return `<div>Error loading HTML template from "${path}"</div>`
+      } 
+    }
+  
+  </script>
+  <script type="module">
+    import App from './static/js/components/app.js';
+    [[block imports]]
+    [[end]]
+    async function init() {
+      const { createApp } = Vue;
+  
+      const app = createApp({
+        components: {
+          App,
+          [[block components]]
+          [[end]]
+        },
+      });
+  
+      app.mount('#vue-target');
+    }
+  
+    init();
+  
+  </script>
   [[block page_scripts]]<!-- individual pages can add scripts here -->[[end]]
 </html>

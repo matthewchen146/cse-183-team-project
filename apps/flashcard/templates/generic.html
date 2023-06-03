@@ -1,13 +1,13 @@
 [[extend 'layout.html']]
+[[block imports]]
+import Root from '[[=vue_root]]'
+[[end]]
+[[block components]]
+Root
+[[end]]
 
-<style>
-.vars { padding: 5px 20px; text-align: center; }
-.vars th:after { content: ": " }
-.vars th, .vars td, .vars li { padding: 2px 5px; }
-</style>
+<root></root>
 
-<div class="section">
-  <div class="vars">
-    [[=BEAUTIFY(__vars__)]]
-  </div>
-</div>
+[[block page_scripts]]
+
+[[end]]

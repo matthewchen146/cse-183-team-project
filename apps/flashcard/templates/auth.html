@@ -1,5 +1,10 @@
-[[extend "layout.html"]]
+[[extend 'layout.html']]
+[[block imports]]
+[[end]]
+[[block components]]
+[[end]]
 
+[[block before_vue]]
 <style>
   .auth-container {
     max-width: 80%;
@@ -10,11 +15,17 @@
     border-radius: 10px;
     padding: 20px;
   }
+
   a.button {
-      margin-left: 10px;
+    margin-left: 10px;
   }
 </style>
+[[end]]
 
 <section class="section">
   [[=form]]
 </section>
+
+[[block page_scripts]]
+
+[[end]]
