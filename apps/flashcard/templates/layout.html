@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <base href="flashcard">
+    <base href="[[=URL('flashcard')]]">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="data:image/x-icon;base64,AAABAAEAAQEAAAEAIAAwAAAAFgAAACgAAAABAAAAAgAAAAEAIAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAPAAAAAA=="/>
     <link rel="stylesheet" href="static/css/bulma.css">
-    <!-- <link rel="stylesheet" href="css/meow.css"> -->
     <link rel="stylesheet" href="static/fontawesome-free-6.4.0-web/css/all.css">
     [[block page_head]]<!-- individual pages can customize header here -->[[end]]
   </head>
@@ -72,5 +71,27 @@
   <script src="static/js/axios.min.js"></script>
   <script src="static/js/vue.js"></script>
   <script src="static/js/utils.js"></script>
+  <script>
+    const authRegisterUrl = "[[=URL('auth/register')]]";
+    const authLoginUrl = "[[=URL('auth/login')]]";
+    const authLogoutUrl = "[[=URL('auth/logout')]]";
+    const authChangePasswordUrl = "[[=URL('auth/change_password')]]";
+
+    const authUrls = {
+      register: authRegisterUrl,
+      login: authLoginUrl,
+      logout: authLogoutUrl,
+      changePassword: authChangePasswordUrl
+    }
+    
+    let authUser = null;
+  </script>
+  [[if globals().get('user'):]]
+  <script>
+    authUser = {
+      username: "[[=globals().get('user').get('username')]]"
+    };
+  </script>
+  [[pass]]
   [[block page_scripts]]<!-- individual pages can add scripts here -->[[end]]
 </html>
