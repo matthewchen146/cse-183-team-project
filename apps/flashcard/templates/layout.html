@@ -10,9 +10,18 @@
     [[block page_head]]<!-- individual pages can customize header here -->[[end]]
   </head>
   <body>
-    <!-- beginning of HTML inserted by extending template -->
-    [[include]]
-    <!-- end of HTML inserted by extending template -->
+    [[block before_vue]]
+    [[end]]
+    <div id="vue-target" v-cloak>
+      <app>
+        <!-- beginning of HTML inserted by extending template -->
+        [[include]]
+        <!-- end of HTML inserted by extending template -->
+      </app>
+    </div>
+    [[block after_vue]]
+    [[end]]
+
     <footer class="footer">
       <div class="content has-text-centered">
         Made with <a href="https://py4web.com">py4web</a>.
@@ -46,5 +55,43 @@
     };
   </script>
   [[pass]]
+  <script>
+    const rootUrl = "[[=URL('flashcard')]]/";
+  
+    function urlFromRoot(subPath) {
+      return rootUrl + subPath
+    }
+  
+    async function loadHtml(path) {
+      try {
+        return (await axios.get(path)).data
+      } catch (error) {
+        console.error(`loadHtml "${path}" error:`, error)
+        return `<div>Error loading HTML template from "${path}"</div>`
+      } 
+    }
+  
+  </script>
+  <script type="module">
+    import App from './static/js/components/app.js';
+    [[block imports]]
+    [[end]]
+    async function init() {
+      const { createApp } = Vue;
+  
+      const app = createApp({
+        components: {
+          App,
+          [[block components]]
+          [[end]]
+        },
+      });
+  
+      app.mount('#vue-target');
+    }
+  
+    init();
+  
+  </script>
   [[block page_scripts]]<!-- individual pages can add scripts here -->[[end]]
 </html>

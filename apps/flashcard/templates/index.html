@@ -1,47 +1,11 @@
 [[extend 'layout.html']]
+[[block imports]]
+[[end]]
+[[block components]]
+[[end]]
 
-<div id="vue-target" v-cloak></div>
+<!-- <root></root> -->
 
 [[block page_scripts]]
-<script>
-  const rootUrl = window.location.origin + '/flashcard/';
 
-  function urlFromRoot(subPath) {
-    return rootUrl + subPath
-  }
-
-  async function loadHtml(path) {
-    try {
-      return (await axios.get(path)).data
-    } catch (error) {
-      console.error(`loadHtml "${path}" error:`, error)
-      return `<div>Error loading HTML template from "${path}"</div>`
-    } 
-  }
-
-</script>
-<script type="module">
-  import Root from '[[=vue_root]]'
-  import App from './static/js/components/app.js'
-  async function init() {
-    const { createApp } = Vue;
-
-    const app = createApp({
-      components: {
-        Root,
-        App
-      },
-      template: `
-      <app>
-        <root></root>
-      </app>
-      `
-    });
-
-    app.mount('#vue-target');
-  }
-
-  init();
-
-</script>
 [[end]]
