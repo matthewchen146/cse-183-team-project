@@ -16,9 +16,11 @@
     <!-- Deck title and author. -->
     <div class="column is-two-thirds">
       <div class="is-flex">
-        <p class="title is-3" style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
+        <a class="title is-3 has-text-link" 
+           style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"
+           :href="deckUrl">
           {{info.title}}
-        </p>
+        </a>
       </div>
       <p class="subtitle is-6">
         By {{info.author}}
@@ -35,14 +37,14 @@
           {{info.num_cards}} card
         </p>
       </div>
-      <div class="subtitle is-6 is-pulled-right">
+      <p class="subtitle is-6 is-pulled-right">
         Last updated: {{info.modified}}
-      </div>
+      </p>
     </div>
   </div>
 
   <!-- Deck description. -->
-  <div class="block">
+  <div class="block is-flex">
     <div style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
       {{info.description}}
     </div>
