@@ -15,6 +15,7 @@ export default await {
     },
     methods: {
         async clearSearch() {
+            // Clears the search bar.
             try {
                 this.search = '';
                 this.getDecks();
@@ -23,13 +24,12 @@ export default await {
             }
         },
         async getDecks() {
-            // Clear the search timeout just in case it is still active (such as when pressing enter)
+            // Clear the search timeout just in case it is still active (such as when pressing enter).
             clearTimeout(this.searchTimeout);
-
             try {
                 // Make a GET request for decks depending on the search query and mode.
                 const search = this.search;
-                const mode = document.getElementById("mode").value;
+                const mode = this.processMode();
                 const result = await axios.get('get_decks', { params: { search: search, mode: mode } });
 
                 // Process results for display.
@@ -43,11 +43,31 @@ export default await {
                 console.error('getDecks error:', error)
             }
         },
+        processMode() {
+            // Processes the current mode depending on what is checked.
+            const mode_author = document.getElementById("mode-author").checked;
+            const mode_tag = document.getElementById("mode-tag").checked;
+            const mode_title = document.getElementById("mode-title").checked;
+
+            // Create the mode string as necessary.
+            var mode = "";
+            if (mode_author) {
+                mode += "author";
+            }
+            if (mode_tag) {
+                mode += (mode.length ? "+tag" : "tag");
+            }
+            if (mode_title || !mode.length) {
+                // Default to title search if no mode specified.
+                mode += (mode.length ? "+title" : "title");
+            }
+            return mode;
+        },
         resetSearchTimeout() {
-            // Resets the search timeout
+            // Resets the search timeout.
             clearTimeout(this.searchTimeout);
             this.searchTimeout = setTimeout(() => {
-                // When the timeout finishes, get decks with the current search string
+                // When the timeout finishes, get decks with the current search string.
                 this.getDecks();
             }, this.searchTimeoutMs);
         }

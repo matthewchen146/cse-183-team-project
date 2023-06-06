@@ -101,30 +101,42 @@ def get_decks():
     # The 'search_mode' determines whether the user is searching
     # for deck titles or deck authors.
     search_string = request.query.get('search')
-    search_mode = request.query.get('mode')
+    search_mode = request.query.get('mode').split("+")
     decks = []
 
     # The query that will be sent to the DAL.
-    # Get all public decks that match the current search string.
-    # Search depends on the search mode.
-    if search_string is None or len(search_string) == 0:
-        query = (db.deck.public == True)
-    else:
-        if search_mode == "title":
-            query = (
-                (db.deck.public == True) &
+    # Get all decks that match the current search mode(s).
+    query_modes = []
+    if search_string is not None and len(search_string) > 0:
+        if "title" in search_mode:
+            query_modes.append(
                 (db.deck.title.contains(search_string))
             )
-        elif search_mode == "author":
-            query = (
-                (db.deck.public == True) &
+        if "author" in search_mode:
+            query_modes.append(
                 (db.deck.author.contains(search_string))
             )
-        else:
-            query = (
-                (db.deck.public == True) &
+        if "tag" in search_mode:
+            query_modes.append(
                 (db.deck.id.belongs(get_decks_from_tag(search_string)))
             )
+
+    # Construct the mode portion of the query.
+    query_mode = None
+    for q in query_modes:
+        if query_mode is None:
+            query_mode = q
+            continue
+        query_mode |= q
+
+    # Construct the entire query.
+    # This is done to establish higher order so that public decks
+    # are prioritized. In other words, all of this does the following:
+    # ``query & (query_mode_1 | query_mode_2 | ...)``
+    if query_mode is not None:
+        query = (db.deck.public == True) & (query_mode)
+    else:
+        query = (db.deck.public == True)
 
     # Iterate through queried decks.
     for row in db(query).iterselect(orderby=~db.deck.modified):

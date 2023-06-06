@@ -1,8 +1,5 @@
 <div class="field">
   <nav class="navbar">
-    <!-- <div class="navbar-brand">
-      <h1 class="title">Flashcard App</h1>
-    </div> -->
     <div class="navbar-end">
       <div class="navbar-item">
         <div class="buttons">
@@ -14,17 +11,6 @@
 
   <!-- Search bar and associated buttons and menus. -->
   <div class="field has-addons">
-    <!-- Drop-down menu for search mode. -->
-    <div class="control">
-      <span class="select">
-        <select name="mode" id="mode">
-          <option value="author">Author</option>
-          <option value="tag">Tag</option>
-          <option selected="selected" value="title">Title</option>
-        </select>
-      </span>
-    </div>
-
     <!-- Search input bar. -->
     <div class="control is-expanded">
       <input class="input block" type="text" placeholder="Search..." v-model="search" v-on:keyup.enter="getDecks()" @input="resetSearchTimeout()">
@@ -38,6 +24,28 @@
       <button class="button is-link" v-on:click="getDecks()">
         <span> Search </span>
       </button>
+    </div>
+  </div>
+
+  <!-- Checkboxoes for choosing search mode(s). -->
+  <div class="field is-grouped">
+    <div class="control">
+      <label class="button grey-lighter is-small">
+        <input type="checkbox" id="mode-author" v-on:click="getDecks()">
+        <span class="ml-2">Authors</span>
+      </label>
+    </div>
+    <div class="control">
+      <label class="button grey-lighter is-small">
+        <input type="checkbox" id="mode-tag" v-on:click="getDecks()">
+        <span class="ml-2">Tags</span>
+      </label>
+    </div>
+    <div class="control">
+      <label class="button grey-lighter is-small">
+        <input type="checkbox" id="mode-title" v-on:click="getDecks()">
+        <span class="ml-2">Titles</span>
+      </label>
     </div>
   </div>
 
