@@ -466,7 +466,18 @@ class Flash(Fixture):
             response.set_cookie("py4web-flash", json.dumps(self.local.flash), path="/")
         else:
             response.delete_cookie("py4web-flash", path="/")
-        context["output"] = self.transform(context["output"])
+        # if we have a valid flash message, we store it for the template to use later
+        output = context["output"]
+        flash = self.local.flash or ""
+        if isinstance(output, dict):
+            if "template_inject" in context:
+                context["template_inject"]["flash"] = flash
+            else:
+                context["template_inject"] = dict(flash=flash)
+        else:
+            if self.local.flash is not None:
+                response.headers["component-flash"] = json.dumps(flash)
+        self.local.flash = None
         self.local.__dict__.clear()
 
     def on_error(self, context):
@@ -478,17 +489,6 @@ class Flash(Fixture):
         if sanitize:
             message = yatl.sanitizer.xmlescape(message)
         self.local.flash = {"message": message, "class": _class}
-
-    def transform(self, data):
-        # if we have a valid flash message, we inject it in the response dict
-        if isinstance(data, dict):
-            if "flash" not in data:
-                data["flash"] = self.local.flash or ""
-        else:
-            if self.local.flash is not None:
-                response.headers["component-flash"] = json.dumps(self.local.flash)
-        self.local.flash = None
-        return data
 
 
 #########################################################################################
@@ -555,6 +555,7 @@ class Template(Fixture):
         output = context["output"]
         if not isinstance(output, dict):
             return output
+
         ctx = dict(request=request)
         ctx.update(HELPERS)
         ctx.update(URL=URL)
@@ -935,7 +936,7 @@ class action:
             try:
                 request.app_name = app_name
                 ret = func(*func_args, **func_kwargs)
-                if isinstance(ret, dict):
+                if isinstance(ret, (list, dict)):
                     response.headers["Content-Type"] = "application/json"
                     ret = dumps(ret)
                 return ret
@@ -1550,6 +1551,15 @@ def watch(apps_folder, server_config, mode="sync"):
     if mode == "lazy":
         Reloader.install_reloader_hook()
 
+def log_routes(apps_routes, log_file = 'routes-py4web.txt'):
+    try:
+        with open(log_file, 'w') as f:
+            f.write( '\n'.join([ v.rule if '\r' in k else ('/' + k )
+                        for k, v in sorted(apps_routes.items()) ]) )
+        print (f'{len(apps_routes)} routes written to {log_file}')
+    except OSError as ex:
+        sys.exit(ex)
+
 
 def start_server(kwargs):
     host = kwargs["host"]
@@ -1557,7 +1567,8 @@ def start_server(kwargs):
     apps_folder = kwargs["apps_folder"]
     number_workers = kwargs["number_workers"]
     quiet = kwargs["quiet"]
-    params = dict(host=host, port=port, reloader=False, quiet=quiet)
+    logging_level = kwargs["logging_level"]
+    params = dict(host=host, port=port, reloader=False, quiet=quiet, logging_level=logging_level )
     server_config = dict(
         platform=platform.system().lower(),
         server=None if kwargs["server"] == "default" else kwargs["server"],
@@ -1607,6 +1618,10 @@ def start_server(kwargs):
 
     if kwargs["watch"] != "off":
         watch(apps_folder, server_config, kwargs["watch"])
+
+    if kwargs['routes']:
+        log_routes ( bottle.default_app().routes )
+
     bottle.run(**params)
 
 
@@ -1924,6 +1939,14 @@ def new_app(apps_folder, app_name, yes, scaffold_zip):
     is_flag=True,
     default=False,
     help="Suppress server output",
+    show_default=True,
+)
+@click.option(
+    "-R",
+    "--routes",
+    is_flag=True,
+    default=False,
+    help="Write apps routes to file",
     show_default=True,
 )
 @click.option(
