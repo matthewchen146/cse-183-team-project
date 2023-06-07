@@ -1,5 +1,6 @@
 from py4web import action, abort, redirect, request, URL
 from yatl.helpers import A
+from py4web.utils.form import Form, FormStyleBulma
 from .common import auth, db, session
 
 
@@ -167,3 +168,72 @@ def set_favorite():
         message='successfully toggled favorite',
         is_favorite=is_favorite
     )
+
+# Edit the selected deck's title, description and public toggle
+@action("edit/<deck_id:int>", method=['GET', 'POST'])
+@action.uses(db, session, auth.user, "edit.html")
+def edit_deck(deck_id=None):
+    assert deck_id is not None
+    d = db.deck[deck_id]
+    if d is None:
+        redirect(URL("index"))
+    form = Form(db.deck, record=d, deletable=False, csrf_session=session, formstyle=FormStyleBulma)
+    if form.accepted:
+        redirect(URL("edit", deck_id))
+    rows = db(db.card.deck_id == deck_id).select()
+    tag_rows = db(db.tag.deck_id == deck_id).select()
+    return dict(form=form, rows=rows, deck_id=deck_id, tag_rows=tag_rows)
+
+# Edit the selected tag
+@action("edit_tag/<deck_id:int>/<tag_id:int>", method=['GET', 'POST'])
+@action.uses(db, session, auth.user, "edit_tag.html")
+def edit_tag(deck_id=None, tag_id=None):
+    assert deck_id is not None
+    assert tag_id is not None
+    t = db.tag[tag_id]
+    tag_form = Form(db.tag, record=t, deletable=False, csrf_session=session, formstyle=FormStyleBulma)
+    if tag_form.accepted:
+        redirect(URL("edit", deck_id))
+    return dict(tag_form=tag_form)
+
+# Delete the selected tag
+@action('delete_tag/<deck_id:int>/<tag_id:int>')
+@action.uses(db, 'delete_tag.html', auth.user)
+def delete_tag(deck_id=None, tag_id=None):
+    assert deck_id is not None
+    assert tag_id is not None
+    db(db.tag.id == tag_id).delete()
+    redirect(URL('edit', deck_id))
+
+# Edit the selected card's front and back
+@action('edit_card/<deck_id:int>/<card_id:int>')
+@action.uses(db, 'edit_card.html', auth.user)
+def edit_card(deck_id=None, card_id=None):
+    assert deck_id is not None
+    assert card_id is not None
+    c = db.card[card_id]
+    form = Form(db.card, record=c, deletable=False, csrf_session=session, formstyle=FormStyleBulma)
+    if form.accepted:
+        redirect(URL("edit", deck_id))
+    return dict(form=form)
+
+# Delete the selected card
+@action('delete_card/<deck_id:int>/<card_id:int>')
+@action.uses(db, 'delete_card.html', auth.user)
+def delete_card(deck_id=None, card_id=None):
+    assert deck_id is not None
+    assert card_id is not None
+    db(db.card.id == card_id).delete()
+    redirect(URL('edit', deck_id))
+
+# Add a card
+@action('add_card/<deck_id:int>', method=["GET", "POST"])
+@action.uses(db, 'add_card.html', auth.user)
+def add_phone(deck_id=None):
+    assert deck_id is not None
+    d = db.card[deck_id]
+    form = Form(db.card, record=d, deletable=False, csrf_session=session, formstyle=FormStyleBulma)
+    if form.accepted:
+        db.card.insert(front=form.vars['front'], back=form.vars['back'], deck_id=deck_id)
+        redirect(URL("edit", deck_id))
+    return dict(form=form)
