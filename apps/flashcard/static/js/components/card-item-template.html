@@ -1,0 +1,34 @@
+<!-- A single card to display -->
+<head>
+  <link rel="stylesheet" href="static/css/card.css">
+</head>
+
+<div class="card" >
+  <header class="card-header">
+    <p  v-if="info.isFront==true" class="card-header-title">
+      Card {{info.index+1}} front
+    </p>
+    <p  v-else class="card-header-title">
+      Card {{info.index+1}} back
+    </p>
+    
+  
+
+  </header>
+  <div @click= toggleCard() class="card-content" >
+    <div v-if="info.isFront == true" class="content">
+      {{info.front}}
+      
+    </div>
+    <div v-else class="content">
+      {{info.back}}
+      
+    </div>
+  </div>
+  <footer class="card-footer">
+    <a href="#" class="card-footer-item">Edit</a>
+    <a href="#" class="card-footer-item">Delete</a>
+  </footer>
+  
+  
+</div>

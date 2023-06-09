@@ -1,0 +1,38 @@
+.card{
+    display: flex;
+    flex-direction: column;
+    
+    .card-content{
+        flex-grow: 1;
+    }
+
+
+}
+.card:hover{
+    cursor: pointer;
+}
+
+.container{
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px,1fr));
+    grid-gap: 0.5em; 
+    height: 90vh;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    width: 100%; 
+    padding: 0 0.5em; 
+    box-sizing: border-box; 
+    padding-bottom: 1em;
+    padding-top: 1em;
+}
+
+    .dropdown-menu {
+        display: none;
+    } 
+
+.dropdown.is-fullwidth {
+    display: flex;
+    .dropdown-trigger,.dropdown-menu {
+        width: 100%;
+    }
+}

@@ -1,0 +1,67 @@
+
+
+<!-- view-deck.html -->
+
+<!DOCTYPE html>
+
+<head>
+  <title>Deck Title  </title>
+  
+    <link rel="stylesheet" href="static/css/card.css">
+  
+  <!-- Add any necessary CSS or JavaScript files -->
+  
+  
+</head>
+<body>
+  <p class="title">Deck name </p>
+  <div class="columns is-mobile">
+    <div class="column is-one-third">
+      <button class="button is-fullwidth is-light title is-4" style="background-color: #D8D8D8; "><strong>Studying</strong> </button>
+    </div>
+    <div class="column is-one-third ">
+      <button class="button is-fullwidth is-light title is-4" style="background-color: #D8D8D8;"><strong>View Stats</strong> </button>
+    </div>
+    <div class="column is-one-third">
+      <div class="dropdown  is-fullwidth" @click="toggleDropdown() ">
+        <div class="dropdown-trigger">
+          <button class="button is-fullwidth is-light title is-4" style="background-color: #D8D8D8;" aria-haspopup="true" aria-controls="dropdown-menu">
+            <strong>Settings</strong>
+          </button>
+        </div>
+        <div class="dropdown-menu" id="dropdown-menu" role="menu">
+          <div class="dropdown-content">
+            <a href="#" class="dropdown-item"  style="color:blue">Edit Deck</a>
+            <a href="#" class="dropdown-item"  style="color: red" >Delete Deck</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <section>
+    <div class="container" >
+      <card-item  v-for="card in cards" :info="card" :key="card.id" ></card-item>
+      
+      <!-- new add card-->
+      <div class="card">
+        
+        <div class="card-content">
+          <div class="content  " style="justify-content: center;">
+            <p class = "title has-text-centered">Add New Card</p>
+            <button @click= add() class="button is-white is-large is-fullwidth"><i class="fa fa-plus "></i></button>
+            
+            
+          </div>
+        </div>
+      
+      </div>	
+        
+    </div>
+  </section>
+
+
+
+
+
+</body>
+

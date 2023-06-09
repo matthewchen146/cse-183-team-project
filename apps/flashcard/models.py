@@ -31,7 +31,9 @@ def add_test_user_and_data():
         last_name=test_user_lastname,
         password=test_user_username
     )
-    user_id = auth.register(user)
+    result = auth.register(user)
+    user_id = result.get('id')
+    print(f"Test user id is {user_id}")
 
     # Generate between 1 and 5 decks.
     ts = datetime.utcnow()

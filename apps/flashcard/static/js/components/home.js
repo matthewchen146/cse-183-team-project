@@ -39,6 +39,7 @@ export default await {
                     deck.modified = Sugar.Date(deck.modified + "Z").relative()
                 });
                 decks.splice(0, decks.length, ...new_decks);
+                console.log(decks)
             } catch (error) {
                 console.error('getDecks error:', error)
             }
@@ -79,6 +80,7 @@ export default await {
     mounted() {
         this.clearSearch();
         this.getDecks();
+        console.log(this.decks);
     },
     template: await loadHtml('./static/js/components/home-template.html')
 }

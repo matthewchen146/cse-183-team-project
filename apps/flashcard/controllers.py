@@ -21,16 +21,19 @@ MAX_DECKS = 10
 @action.uses("generic.html", auth)
 def index():
     return dict(
+        
         vue_root='./static/js/components/home.js'
     )
 
 
 # The page to view an individual deck.
 @action("deck/<deck_id:int>")
-@action.uses("generic.html")
+@action.uses("./static/js/components/view-deck.html")
 def deck(deck_id):
     return dict(
-        vue_root='./static/js/components/deck.js'
+        deckId=deck_id,
+        vue_root='./static/js/components/view-deck.js',
+        
     )
 
 
@@ -179,3 +182,27 @@ def set_favorite():
         message='successfully toggled favorite',
         is_favorite=is_favorite
     )
+
+# Get decks to display.
+@action("get_cards", method="GET")
+@action.uses(auth, db)
+def get_cards(deck_id=None):
+    deck_id= request.query.get('deck_id')
+    print("fetching a deck with the ID ",deck_id)
+    # Make sure a valid deck ID is provided
+    
+
+    # Query the database for cards associated with the deck ID
+    cards = db(db.card.deck_id == deck_id).select().as_list()
+    for card in cards:
+        card['isFront'] = True
+    
+    
+
+    # Return the cards as a dictionary
+    return dict(cards=cards)
+
+
+
+
+
