@@ -279,18 +279,6 @@ def edit_card(deck_id=None, card_id=None):
         redirect(URL("edit", deck_id))
     return dict(form=form)
 
-#Add a tag
-@action('add_tag/<deck_id:int>', method=["GET", "POST"])
-@action.uses(db, 'add_tag.html', auth.user)
-def add_phone(deck_id=None):
-    assert deck_id is not None
-    d = db.tag[deck_id]
-    form = Form(db.tag, record=d, deletable=False, csrf_session=session, formstyle=FormStyleBulma)
-    if form.accepted:
-        db.card.insert(tag=form.vars['tag'], deck_id=deck_id)
-        redirect(URL("edit", deck_id))
-    return dict(form=form)
-
 # Delete the selected card
 @action('delete_card/<deck_id:int>/<card_id:int>')
 @action.uses(db, 'delete_card.html', auth.user)
