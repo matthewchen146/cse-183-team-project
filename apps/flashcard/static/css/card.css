@@ -1,7 +1,8 @@
 .card{
     display: flex;
     flex-direction: column;
-    
+    /* max-height: 30vh; */
+
     .card-content{
         flex-grow: 1;
     }
@@ -12,12 +13,15 @@
     cursor: pointer;
 }
 
-.container{
+.section{
     display:grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px,1fr));
+    grid-template-columns: repeat(auto-fill, minmax(281px, 1fr));
+    grid-template-rows: repeat(auto-fill, minmax(293px, 2fr));
+    
     grid-gap: 0.5em; 
     height: 90vh;
     overflow-x: hidden;
+    grid-gap: 0.25em; 
     overflow-y: scroll;
     width: 100%; 
     padding: 0 0.5em; 
