@@ -206,7 +206,7 @@ def delete_tag(deck_id=None, tag_id=None):
     redirect(URL('edit', deck_id))
 
 # Edit the selected card's front and back
-@action('edit_card/<deck_id:int>/<card_id:int>')
+@action('edit_card/<deck_id:int>/<card_id:int>', method=['GET', 'POST'])
 @action.uses(db, 'edit_card.html', auth.user)
 def edit_card(deck_id=None, card_id=None):
     assert deck_id is not None
