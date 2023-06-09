@@ -22,16 +22,19 @@ MAX_DECKS = 10
 @action.uses("generic.html", auth)
 def index():
     return dict(
+        
         vue_root='./static/js/components/home.js'
     )
 
 
 # The page to view an individual deck.
 @action("deck/<deck_id:int>")
-@action.uses("generic.html")
+@action.uses("generic.html", auth)
 def deck(deck_id):
     return dict(
-        vue_root='./static/js/components/deck.js'
+        deckId=deck_id,
+        vue_root='./static/js/components/view-deck.js',
+        
     )
 
 
@@ -102,30 +105,42 @@ def get_decks():
     # The 'search_mode' determines whether the user is searching
     # for deck titles or deck authors.
     search_string = request.query.get('search')
-    search_mode = request.query.get('mode')
+    search_mode = request.query.get('mode').split("+")
     decks = []
 
     # The query that will be sent to the DAL.
-    # Get all public decks that match the current search string.
-    # Search depends on the search mode.
-    if search_string is None or len(search_string) == 0:
-        query = (db.deck.public == True)
-    else:
-        if search_mode == "title":
-            query = (
-                (db.deck.public == True) &
+    # Get all decks that match the current search mode(s).
+    query_modes = []
+    if search_string is not None and len(search_string) > 0:
+        if "title" in search_mode:
+            query_modes.append(
                 (db.deck.title.contains(search_string))
             )
-        elif search_mode == "author":
-            query = (
-                (db.deck.public == True) &
+        if "author" in search_mode:
+            query_modes.append(
                 (db.deck.author.contains(search_string))
             )
-        else:
-            query = (
-                (db.deck.public == True) &
+        if "tag" in search_mode:
+            query_modes.append(
                 (db.deck.id.belongs(get_decks_from_tag(search_string)))
             )
+
+    # Construct the mode portion of the query.
+    query_mode = None
+    for q in query_modes:
+        if query_mode is None:
+            query_mode = q
+            continue
+        query_mode |= q
+
+    # Construct the entire query.
+    # This is done to establish higher order so that public decks
+    # are prioritized. In other words, all of this does the following:
+    # ``query & (query_mode_1 | query_mode_2 | ...)``
+    if query_mode is not None:
+        query = (db.deck.public == True) & (query_mode)
+    else:
+        query = (db.deck.public == True)
 
     # Iterate through queried decks.
     for row in db(query).iterselect(orderby=~db.deck.modified):
@@ -169,7 +184,53 @@ def set_favorite():
         is_favorite=is_favorite
     )
 
+# Get cards to display.
+@action("get_cards", method="GET")
+@action.uses(auth, db)
+def get_cards(deck_id=None):
+    deck_id= request.query.get('deck_id')
+    print("fetching a deck with the ID ",deck_id)
+    # Make sure a valid deck ID is provided
+    
+
+    # Query the database for cards associated with the deck ID
+    cards = db(db.card.deck_id == deck_id).select().as_list()
+    for card in cards:
+        card['isFront'] = True
+    
+    
+
+    # Return the cards as a dictionary
+    return dict(cards=cards)
+
+@action("get_deck", method="GET")
+@action.uses(auth, db)
+def get_deck(deck_id=None):
+    deck_id = request.query.get('deck_id')
+    print("fetching a deck with the ID", deck_id)
+
+    # Make sure a valid deck ID is provided
+
+    # Query the database for the deck
+    deck = db(db.deck.id == deck_id).select().first()
+
+    if deck:
+        # Check if the deck is favorited by the user
+        is_favorited = bool(
+            db(
+                (db.favorite.deck_id == deck.id) &
+                (db.favorite.user_id == auth.user_id)
+            ).count()
+        )
+        deck["is_favorited"] = is_favorited
+
+    
+
+    # Return the deck as a dictionary
+    return dict(deck=deck)
+
 # Edit the selected deck's title, description and public toggle
+# Also updates Save Status
 @action("edit/<deck_id:int>", method=['GET', 'POST'])
 @action.uses(db, session, auth.user, "edit.html")
 def edit_deck(deck_id=None):
@@ -177,12 +238,13 @@ def edit_deck(deck_id=None):
     d = db.deck[deck_id]
     if d is None:
         redirect(URL("index"))
+    status = "N/A"
     form = Form(db.deck, record=d, deletable=False, csrf_session=session, formstyle=FormStyleBulma)
     if form.accepted:
-        redirect(URL("edit", deck_id))
+        status = "Saved"
     rows = db(db.card.deck_id == deck_id).select()
     tag_rows = db(db.tag.deck_id == deck_id).select()
-    return dict(form=form, rows=rows, deck_id=deck_id, tag_rows=tag_rows)
+    return dict(form=form, rows=rows, deck_id=deck_id, tag_rows=tag_rows, status=status)
 
 # Edit the selected tag
 @action("edit_tag/<deck_id:int>/<tag_id:int>", method=['GET', 'POST'])
@@ -217,6 +279,18 @@ def edit_card(deck_id=None, card_id=None):
         redirect(URL("edit", deck_id))
     return dict(form=form)
 
+#Add a tag
+@action('add_tag/<deck_id:int>', method=["GET", "POST"])
+@action.uses(db, 'add_tag.html', auth.user)
+def add_phone(deck_id=None):
+    assert deck_id is not None
+    d = db.tag[deck_id]
+    form = Form(db.tag, record=d, deletable=False, csrf_session=session, formstyle=FormStyleBulma)
+    if form.accepted:
+        db.card.insert(tag=form.vars['tag'], deck_id=deck_id)
+        redirect(URL("edit", deck_id))
+    return dict(form=form)
+
 # Delete the selected card
 @action('delete_card/<deck_id:int>/<card_id:int>')
 @action.uses(db, 'delete_card.html', auth.user)
@@ -237,3 +311,8 @@ def add_phone(deck_id=None):
         db.card.insert(front=form.vars['front'], back=form.vars['back'], deck_id=deck_id)
         redirect(URL("edit", deck_id))
     return dict(form=form)
+
+
+
+
+
