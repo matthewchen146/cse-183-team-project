@@ -51,6 +51,7 @@
   [[if globals().get('user'):]]
   <script>
     authUser = {
+      id: parseInt("[[=globals().get('user').get('id')]]"),
       username: "[[=globals().get('user').get('username')]]"
     };
   </script>
