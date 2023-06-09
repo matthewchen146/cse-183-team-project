@@ -28,7 +28,7 @@ def index():
 
 # The page to view an individual deck.
 @action("deck/<deck_id:int>")
-@action.uses("./static/js/components/generic.html")
+@action.uses("generic.html", auth)
 def deck(deck_id):
     return dict(
         deckId=deck_id,
