@@ -32,7 +32,7 @@
       <button class="button is-fullwidth is-light title is-4" style="background-color: #D8D8D8;"><strong>View Stats</strong> </button>
     </div>
     <div class="column is-one-third">
-      <div class="dropdown  is-fullwidth" @click="toggleDropdown() ">
+      <div v-if="deck.owner === true" class="dropdown  is-fullwidth" @click="toggleDropdown() ">
         <div class="dropdown-trigger">
           <button class="button is-fullwidth is-light title is-4" style="background-color: #D8D8D8;" aria-haspopup="true" aria-controls="dropdown-menu">
             <strong>Settings</strong>
@@ -45,10 +45,13 @@
           </div>
         </div>
       </div>
+      <button v-else class="button is-fullwidth is-light title is-4" style="background-color: #D8D8D8;" >
+        <strong>Settings</strong>
+      </button>
     </div>
   </div>
-  <section>
-    <div class="container" >
+  
+    <div class="section" >
       <card-item  v-for="card in cards" :info="card" :key="card.id" ></card-item>
       
       <!-- new add card-->
@@ -63,10 +66,9 @@
           </div>
         </div>
       
-      </div>	
-        
+      </div>	  
     </div>
-  </section>
+  
 
 
 

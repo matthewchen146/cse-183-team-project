@@ -193,9 +193,11 @@ def get_cards(deck_id=None):
     
 
     # Query the database for cards associated with the deck ID
+    deck = db(db.deck.id == deck_id).select().first()
     cards = db(db.card.deck_id == deck_id).select().as_list()
     for card in cards:
         card['isFront'] = True
+        card["owner"] = bool(deck.user_id == auth.user_id)
     
     
 
@@ -222,6 +224,10 @@ def get_deck(deck_id=None):
             ).count()
         )
         deck["is_favorited"] = is_favorited
+        print("deck user",deck.user_id)
+        print("auth",auth.user_id)
+        print()
+        deck["owner"] = bool(deck.user_id == auth.user_id)
 
     
 
