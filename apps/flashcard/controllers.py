@@ -183,7 +183,7 @@ def set_favorite():
         is_favorite=is_favorite
     )
 
-# Get decks to display.
+# Get cards to display.
 @action("get_cards", method="GET")
 @action.uses(auth, db)
 def get_cards(deck_id=None):
@@ -201,6 +201,33 @@ def get_cards(deck_id=None):
 
     # Return the cards as a dictionary
     return dict(cards=cards)
+
+@action("get_deck", method="GET")
+@action.uses(auth, db)
+def get_deck(deck_id=None):
+    deck_id = request.query.get('deck_id')
+    print("fetching a deck with the ID", deck_id)
+
+    # Make sure a valid deck ID is provided
+
+    # Query the database for the deck
+    deck = db(db.deck.id == deck_id).select().first()
+
+    if deck:
+        # Check if the deck is favorited by the user
+        is_favorited = bool(
+            db(
+                (db.favorite.deck_id == deck.id) &
+                (db.favorite.user_id == auth.user_id)
+            ).count()
+        )
+        deck["is_favorited"] = is_favorited
+
+    
+
+    # Return the deck as a dictionary
+    return dict(deck=deck)
+
 
 
 

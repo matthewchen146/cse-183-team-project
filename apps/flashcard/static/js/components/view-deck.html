@@ -14,7 +14,16 @@
   
 </head>
 <body>
-  <p class="title">Deck name </p>
+  <a v-if="deck.is_favorited !== undefined" @click="toggleFavorite()">
+    <span class="icon is-small mr-2">
+      <i :class="'fa-' + (deck.is_favorited ? 'solid' : 'regular') + ' fa-star'"></i>
+    </span>
+  </a>
+  <p class="title"   >
+    Deck: {{deck.title}} </p>
+    <p class="subtitle"  >
+      By: {{deck.author}}
+    </p>
   <div class="columns is-mobile">
     <div class="column is-one-third">
       <button class="button is-fullwidth is-light title is-4" style="background-color: #D8D8D8; "><strong>Studying</strong> </button>
