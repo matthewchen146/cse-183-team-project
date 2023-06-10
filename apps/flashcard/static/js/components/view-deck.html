@@ -39,7 +39,7 @@
         <div class="dropdown-menu" id="dropdown-menu" role="menu">
           <div class="dropdown-content">
             <a :href="editUrl" class="dropdown-item"  style="color:blue">Edit Deck</a>
-            <a href="#" class="dropdown-item"  style="color: red" >Delete Deck</a>
+            <a :href="deleteDeckUrl" class="dropdown-item"  style="color: red" >Delete Deck</a>
           </div>
         </div>
       </div>
@@ -51,14 +51,12 @@
         </div>
         <div class="dropdown-menu" id="dropdown-menu" role="menu">
           <div class="dropdown-content">
-            <p  class="has-text-centered" style="color:red">You are not the owner of the deck</a>
+            <p  class="has-text-centered" style="color:red">You are not the owner of the deck</p>
             
           </div>
         </div>
       </div>
-      <button v-else class="button is-fullwidth is-light title is-4" style="background-color: #D8D8D8;" >
-        <strong>Settings</strong>
-      </button>
+      
     </div>
   </div>
   
