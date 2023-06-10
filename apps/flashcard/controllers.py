@@ -258,7 +258,7 @@ def get_deck(deck_id=None):
 def edit_deck(deck_id=None):
     assert deck_id is not None
     d = db.deck[deck_id]
-    if d is None:
+    if d is None or d.user_id != auth.user_id:
         redirect(URL("index"))
     status = "N/A"
     form = Form(db.deck, record=d, deletable=False, csrf_session=session, formstyle=FormStyleBulma)
@@ -274,6 +274,9 @@ def edit_deck(deck_id=None):
 def edit_tag(deck_id=None, tag_id=None):
     assert deck_id is not None
     assert tag_id is not None
+    d = db.deck[deck_id]
+    if d is None or d.user_id != auth.user_id:
+        redirect(URL("index"))
     t = db.tag[tag_id]
     tag_form = Form(db.tag, record=t, deletable=False, csrf_session=session, formstyle=FormStyleBulma)
     if tag_form.accepted:
@@ -286,6 +289,9 @@ def edit_tag(deck_id=None, tag_id=None):
 def delete_tag(deck_id=None, tag_id=None):
     assert deck_id is not None
     assert tag_id is not None
+    d = db.deck[deck_id]
+    if d is None or d.user_id != auth.user_id:
+        redirect(URL("index"))
     db(db.tag.id == tag_id).delete()
     redirect(URL('edit', deck_id))
 
@@ -294,6 +300,9 @@ def delete_tag(deck_id=None, tag_id=None):
 @action.uses(db, 'add_tag.html', auth.user)
 def add_tag(deck_id=None):
     assert deck_id is not None
+    d = db.deck[deck_id]
+    if d is None or d.user_id != auth.user_id:
+        redirect(URL("index"))
     t = db.tag[deck_id]
     form = Form(db.tag, record=t, deletable=False, csrf_session=session, formstyle=FormStyleBulma)
     if form.accepted:
@@ -307,6 +316,9 @@ def add_tag(deck_id=None):
 def edit_card(deck_id=None, card_id=None):
     assert deck_id is not None
     assert card_id is not None
+    d = db.deck[deck_id]
+    if d is None or d.user_id != auth.user_id:
+        redirect(URL("index"))
     c = db.card[card_id]
     form = Form(db.card, record=c, deletable=False, csrf_session=session, formstyle=FormStyleBulma)
     if form.accepted:
@@ -319,6 +331,9 @@ def edit_card(deck_id=None, card_id=None):
 def delete_card(deck_id=None, card_id=None):
     assert deck_id is not None
     assert card_id is not None
+    d = db.deck[deck_id]
+    if d is None or d.user_id != auth.user_id:
+        redirect(URL("index"))
     db(db.card.id == card_id).delete()
     redirect(URL('edit', deck_id))
 
@@ -327,7 +342,10 @@ def delete_card(deck_id=None, card_id=None):
 @action.uses(db, 'add_card.html', auth.user)
 def add_card(deck_id=None):
     assert deck_id is not None
-    d = db.card[deck_id]
+    d = db.deck[deck_id]
+    if d is None or d.user_id != auth.user_id:
+        redirect(URL("index"))
+
     form = Form(db.card, record=d, deletable=False, csrf_session=session, formstyle=FormStyleBulma)
     if form.accepted:
         db.card.insert(front=form.vars['front'], back=form.vars['back'], deck_id=deck_id)
