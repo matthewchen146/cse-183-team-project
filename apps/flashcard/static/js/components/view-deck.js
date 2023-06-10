@@ -12,6 +12,7 @@ export default {
         return {
             cards: [],
             deck: {},
+            studyUrl: "",
             editUrl: "",
             addCardUrl:"",
             deleteDeckUrl:""
@@ -27,9 +28,10 @@ export default {
                 const urlParts = currentUrl.split('/');
                 
                 const deckId = urlParts[urlParts.length - 1];
-                this.editUrl = urlFromRoot('edit/' + deckId)
-                this.addCardUrl = urlFromRoot('add_card/' + deckId)
-                this.deleteDeckUrl = urlFromRoot('delete/' + deckId)
+                this.studyUrl = urlFromRoot('study/' + deckId);
+                this.editUrl = urlFromRoot('edit/' + deckId);
+                this.addCardUrl = urlFromRoot('add_card/' + deckId);
+                this.deleteDeckUrl = urlFromRoot('delete/' + deckId);
                 console.log(this.addCardUrl)
             const response = await axios.get('get_cards', { params: { deck_id: deckId } });
             const cards = response.data.cards;

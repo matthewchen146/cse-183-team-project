@@ -1,0 +1,38 @@
+<div>
+    <div class="section">
+        <div class="columns is-mobile block">
+            <div class="column is-one-third">
+                <div class="buttons">
+                    <a :href="exitUrl" class="button block is-warning">Exit</a>
+                </div>
+            </div>
+            <div class="column is-one-third">
+                <h1 class="subtitle has-text-centered">
+                    Card {{cardIndex + 1}}
+                </h1>
+            </div>
+            <div class="column is-one-third"></div>
+        </div>
+        <div class="columns is-mobile block">
+            <div class="column is-one-fifth">
+                <div class="container is-flex is-justify-content-center is-align-items-center" :style="{ minHeight: '400px'}">
+                    <button class="button block is-danger" @click="prevCard()">Prev</button>
+                </div>
+            </div>
+            <div class="column is-three-fifths">
+                <div class="box is-flex is-justify-content-center is-align-items-center" :style="{ minHeight: '400px'}" @click="flip()" v-if="cards[cardIndex] !== undefined" :set="card = cards[cardIndex]">
+                    {{ isFlipped ? card.back : card.front }}
+                </div>
+            </div>
+            <div class="column is-one-fifth">
+                <div class="container is-flex is-justify-content-center is-align-items-center" :style="{ minHeight: '400px'}">
+                    <button class="button block is-success" @click="nextCard()">Next</button>
+                </div>
+            </div>
+        </div>
+        <div class="container is-fullwidth is-flex is-justify-content-center">
+            <button class="button is-info" @click="flip()">Flip</button>
+        </div>
+        
+    </div>
+</div>
