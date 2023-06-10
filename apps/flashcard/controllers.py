@@ -397,7 +397,7 @@ def add_card(deck_id=None):
     if d is None or d.user_id != auth.user_id:
         redirect(URL("index"))
 
-    form = Form(db.card, record=d, deletable=False, csrf_session=session, formstyle=FormStyleBulma)
+    form = Form(db.card, deletable=False, csrf_session=session, formstyle=FormStyleBulma)
     if form.accepted:
         db.card.insert(front=form.vars['front'], back=form.vars['back'], deck_id=deck_id)
         redirect(URL("edit", deck_id))
