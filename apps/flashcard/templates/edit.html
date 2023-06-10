@@ -41,8 +41,14 @@
         </tr>
         [[for row in rows:]]
         <tr>
-          <td>[[=row.front]]</td>
-          <td>[[=row.back]]</td>
+          <td style="max-width: 200px; /* Adjust the value as needed */
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;">[[=row.front]]</td>
+          <td  style="max-width: 200px; /* Adjust the value as needed */
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;">[[=row.back]]</td>
           <td>
             <a class="button has-background-warning" href="[[=URL('edit_card', deck_id, row.id)]]">
               <i class="fa fa-edit"></i>
