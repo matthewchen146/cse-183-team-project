@@ -6,10 +6,10 @@
 <div class="card" >
   <header class="card-header">
     <p  v-if="info.isFront==true" class="card-header-title">
-      Card {{info.index+1}} front
+      Card  {{ cardIndex + 1 }} front
     </p>
     <p  v-else class="card-header-title">
-      Card {{info.index+1}} back
+      Card  {{ cardIndex + 1 }} back
     </p>
     
   
@@ -27,8 +27,8 @@
   </div>
 
   <footer v-if="info.owner==true" class="card-footer">
-    <a href="#" class="card-footer-item">Edit</a>
-    <a href="#" class="card-footer-item">Delete</a>
+    <a href="#" class="card-footer-item" style="color: blue">Edit</a>
+    <a href="#" class="card-footer-item" style="color: red" >Delete</a>
   </footer>
   
   

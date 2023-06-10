@@ -1,6 +1,6 @@
 // view-deck.js
 import cardItem from './card-item.js';
-import deckItem from './deck-item.js';
+
 
 export default {
     components: {
@@ -11,7 +11,9 @@ export default {
     data() {
         return {
             cards: [],
-            deck: {}
+            deck: {},
+            editUrl: "",
+            addCardUrl:""
         };
     },
     methods: {
@@ -24,6 +26,9 @@ export default {
                 const urlParts = currentUrl.split('/');
                 
                 const deckId = urlParts[urlParts.length - 1];
+                this.editUrl = urlFromRoot('edit/' + deckId)
+                this.addCardUrl = urlFromRoot('add_card/' + deckId)
+                console.log(this.addCardUrl)
             const response = await axios.get('get_cards', { params: { deck_id: deckId } });
             const cards = response.data.cards;
             const response2 = await axios.get('get_deck', { params: { deck_id: deckId } });

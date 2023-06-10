@@ -40,7 +40,7 @@
         </div>
         <div class="dropdown-menu" id="dropdown-menu" role="menu">
           <div class="dropdown-content">
-            <a href="#" class="dropdown-item"  style="color:blue">Edit Deck</a>
+            <a :href="editUrl" class="dropdown-item"  style="color:blue">Edit Deck</a>
             <a href="#" class="dropdown-item"  style="color: red" >Delete Deck</a>
           </div>
         </div>
@@ -52,15 +52,16 @@
   </div>
   
     <div class="section" >
-      <card-item  v-for="card in cards" :info="card" :key="card.id" ></card-item>
+      <card-item  v-for="(card, index) in cards"  :info="card" :card-index="index" :key="card.id" ></card-item>
       
       <!-- new add card-->
-      <div class="card">
+    
+      <div v-if="deck.owner===true"class="card">
         
         <div class="card-content">
           <div class="content  " style="justify-content: center;">
             <p class = "title has-text-centered">Add New Card</p>
-            <button @click= add() class="button is-white is-large is-fullwidth"><i class="fa fa-plus "></i></button>
+            <a :href="addCardUrl"> <button  :href="addCardUrl" class="button is-white is-large is-fullwidth"> <a :href="addCardUrl"><i  class="fa fa-plus "></i></a></button></a>
             
             
           </div>

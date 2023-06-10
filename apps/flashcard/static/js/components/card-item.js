@@ -4,6 +4,11 @@ export default {
       type: Object,
       default: {},
     },
+    cardIndex: {
+      type: Number,
+      required: true,
+    },
+  
   },
   methods: {
     toggleCard() {
