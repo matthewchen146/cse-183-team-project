@@ -194,17 +194,13 @@ def get_cards(deck_id=None):
     
 
     # Query the database for cards associated with the deck ID
-<<<<<<< HEAD
+
     deck = db(db.deck.id == deck_id).select().first()
     cards = db(db.card.deck_id == deck_id).select().as_list()
     for card in cards:
         card['isFront'] = True
         card["owner"] = bool(deck.user_id == auth.user_id)
-=======
-    cards = db(db.card.deck_id == deck_id).select().as_list()
-    for card in cards:
-        card['isFront'] = True
->>>>>>> mtan42
+
     
     
 
@@ -231,21 +227,20 @@ def get_deck(deck_id=None):
             ).count()
         )
         deck["is_favorited"] = is_favorited
-<<<<<<< HEAD
+
         print("deck user",deck.user_id)
         print("auth",auth.user_id)
         print()
         deck["owner"] = bool(deck.user_id == auth.user_id)
-=======
->>>>>>> mtan42
+
 
     
 
     # Return the deck as a dictionary
     return dict(deck=deck)
 
-<<<<<<< HEAD
-=======
+
+
 # Edit the selected deck's title, description and public toggle
 # Also updates Save Status
 @action("edit/<deck_id:int>", method=['GET', 'POST'])
@@ -316,7 +311,7 @@ def add_phone(deck_id=None):
         db.card.insert(front=form.vars['front'], back=form.vars['back'], deck_id=deck_id)
         redirect(URL("edit", deck_id))
     return dict(form=form)
->>>>>>> mtan42
+
 
 
 
