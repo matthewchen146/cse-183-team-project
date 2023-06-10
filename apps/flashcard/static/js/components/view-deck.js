@@ -21,10 +21,10 @@ export default {
     methods: {
         async getCards() {
             try {
-                //console.log(deckId)
+
                 const currentUrl = window.location.href;
 
-                // Extract information from the URL
+
                 const urlParts = currentUrl.split('/');
                 
                 const deckId = urlParts[urlParts.length - 1];
@@ -43,10 +43,6 @@ export default {
             } catch (error) {
             console.error('Error getting cards:', error);
             }
-        },
-
-        add(){
-            console.log("adding");
         },
         toggleDropdown(){
             console.log("IM CALLED")
@@ -73,9 +69,7 @@ export default {
             }
         },
 
-        // flip(card){
-        //     card.isFront = !card.isFront
-        // }
+       
 
     },
     mounted() {
