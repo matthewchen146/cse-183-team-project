@@ -1,14 +1,97 @@
-# cse-183-team-project
-Flashcards
-# emails
-mchen146@ucsc.edu Jalva100@ucsc.edu nwong17@ucsc.edu Mtan42@ucsc.edu bquang@ucsc.edu
-# description
-This is a flashcard app. The main function will be to find decks and be able to study each card and flip them. You can create your own decks and add cards to them. Cards can contain text and images. Decks can be set to public or private. You can view all your decks in your profile page. You can also add tags to your decks to make them easier to search. When studying, you can view the cards in order or shuffle them. There can also be a way to auto sort cards based on how much you struggle on specific cards, meaning it can show cards you struggle with more often than those you think are easy. You can also combine multiple decks during a study session, while the original decks remain unchanged. If cards are tagged, you can also spawn a composite deck of cards based on a certain selector.
-# main pages
-Sketches: https://docs.google.com/document/d/1bG1MpbpZuVgnCje2CVgHCXiv5YPz7i0XJo8IA7Ov3ak/edit?usp=sharing. The decks page contains all the decks you have created. It could also contain public decks that you have favorited. The view deck page is for viewing a specific deck. The study button will bring you to the studying page. In the settings, you can delete or edit the deck. This edit deck page is for editing deck data and adding or removing cards. Card editing method is subject to change, but for now it will follow a table structure. The study page is where you go through each card one at a time. You can flip it by clicking on the card. You can determine whether it is easy, allright, or difficult. This will determine how often the card comes up later.
-# data tables
-There will be a table for deck info, which contains the deck meta data such as title, number of cards, privacy, settings, and tags. It will also contain a pointer to the deck data itself. The deck data table will have the array of card data for each card. Card data will contain text for each side of the card. There will also be a table for user data. User data will contain personal deck data that has the user’s progress in the deck, as well as the difficulty marked for each card, referenced with an id.
-# user stories
-A typical user will want to create a flashcard deck to study some terms. They log in to the site to find a deck that has the terms they need to study. If none exists, they decide to create their own deck. They go to their profile and press the New button. This brings them to a deck edit page where they can change the title and add cards in the table. Once they finish, they save and choose to keep it private, so only they can see it. They can go to the View Deck page and start studying. They flip through each card, and based on how easy it was to remember, they press one of the corresponding buttons. They see that difficult terms show up more often, and it helps them memorize it. 
-# implementation plan
-This plan is fluid. Work will generally be split into specific page design (colors, button placement, overall aesthetic, interaction guides, etc.), HTML user experience programming (animations, button interactions, etc.), and backend programming (managing requests, reading and writing from database, etc.). For part one, we will implement the database functionality, and basic essential pages with working features, even if the design is not polished yet. The functionality will be scoped to just going through each card, being able to edit and create your deck, and viewing all your decks. For part two, we will work on polishing the design and adding more functionality, like searching for decks with a search bar, card sorting, and combining cards and/or decks. For part three, we will continue to polish as much as we can.
+# Flashcard - CSE 183 Team Project
+
+[Project Repository](https://github.com/matthewchen146/cse-183-team-project)  
+
+[Design Sketches](https://docs.google.com/document/d/1bG1MpbpZuVgnCje2CVgHCXiv5YPz7i0XJo8IA7Ov3ak/edit?usp=sharing)
+
+Matthew Chen ([mchen146@ucsc.edu](mchen146@ucsc.edu))  
+Jonathan Alvarez ([jalva100@ucsc.edu](jalva100@ucsc.edu))  
+Nicholas Wong ([nwong17@ucsc.edu](nwong17@ucsc.edu))  
+Michael Tan ([mtan42@ucsc.edu](mtan42@ucsc.edu))  
+Benjamin Quang ([bquang@ucsc.edu](bquang@ucsc.edu))  
+
+## About
+
+### Description
+
+**Flashcard** is a flashcard application where users create and view decks of flashcards, much like Quizlet.
+In Flashcard, a user can create their own deck with their own cards for studying, or use the search to find, view, and favorite other user-created decks.
+Cards have a front side and a back side, facilitating easy studying by flipping between the two sides.
+
+### Features
+
+This application comes with the following features:
+
+- User-created decks
+  - Users can create new decks with their own individual cards.
+  - Users can modify and delete their own pre-existing decks and any individual card in the deck.
+  - Users can set whether their spefific deck is public or private.
+  - Users can view a deck and navigate and flip through its individual cards.
+- Flexible search
+  - Users can search for public decks based on the deck title, the author's username, or a specific tag applied to decks.
+- Favoriting
+  - Users can favorite decks for easier access to them.
+
+## Technical Explanation
+
+### Idea
+
+As a team, we came up with and tried to followed these [design sketches](https://docs.google.com/document/d/1bG1MpbpZuVgnCje2CVgHCXiv5YPz7i0XJo8IA7Ov3ak/edit?usp=sharing).
+They served as a good starting point for inspiration when we actually began to start implementing various features of our application.
+
+### User Stories
+
+The following user stories describe the features we aimed to implement:
+
+- "As a user, I want to create a deck of flashcards to help me study a specific topic."
+  - A user can create their own deck.
+  - A user can add cards to their deck.
+  - A user can add content to the front and back of a card.
+  - A user can edit the deck title and description as well as the content of any card in the deck.
+- "As a user, I want to search for decks created by other users to help me study."
+  - A user can search for decks based on author username.
+  - A user can search for decks based on a specific tag applied to a deck.
+  - A user can search for decks based on deck title.
+  - A user can combine different modes of search at once.
+  - A user can view a deck and navigate through its cards.
+- "As a user, I want to favorite specific decks so that I can return to them easily later."
+  - A user can favorite and unfavorite decks.
+- "As a user, I want to help others study as well by allowing my created deck to be findable in the search."
+  - A user can set their decks to be either public (viewable to others) or private (viewable only to him or her).
+
+### Models
+
+The following database models were defined and used in ``models.py``:
+
+- ``deck``
+  - A table used to hold information regarding an individual deck of  cards.
+  - Contains fields for the user ID of the author, the username of the author, the deck title, the deck description, whether or not the deck is "public" (visible to others when searching), a creation timestamp, and a last modified timestamp.
+- ``card``
+  - A table used to hold information regarding an individual card that belongs to a deck.
+  - Contains fields for the deck ID that the card belongs in, the positional index of the card in the deck, the content on the front of the card, and the content on the back of the card.
+- ``tag``
+  - A many-to-one table used to hold user-defined tags for a deck.
+  - Contains fields for the deck ID that the tag applies to and the tag itself.
+- ``favorite``
+  - A many-to-many table used to hold users' favorited decks.
+  - Contains fields for a deck ID and the user ID of the user that favorited the deck.
+
+### Controllers
+
+``controllers.py`` is internally divided into three components: views, helper/utility, and API.
+
+- In the view functions, these lead to Vue.js-styled templates with an associated ``vue_root`` to load the correct JavaScript file (see the next section **Templates** for more on this).
+- Helper/utility functions are more-or-less self-explanatory; they are used by API calls (like fetchings tags for a specific deck) for cleaner, more organized code.
+- API functions are used mainly for fetching/modifying things (like getting decks and cards, or editing tags) in the database via the database abstraction layer and form processing.
+
+### Templates
+
+Portions of this applicatation (like retrieving decks from the backend and viewing a specific deck) lean heavily into a [Vue.js-styled application](https://vuejs.org/guide/essentials/application.html).
+These Vue-styled templates and associated JavaScript implementations are found in ``<root>/static/js/components``.
+In these templates, JavaScript is used extensively to process a web page for the user's viewing, allowing for things like custom components (for instance, ``<deck-item>`` in ``home-template.html``) in the HTML.
+
+Other portions of this application (like adding/editing cards and tags) follow the more traditional PY4WEB way of doing things, with controllers and templates working together to display the web page to the user and process the user's form data.
+
+## Notes
+
+- To ensure that there are not any application bugs caused by your browser loading something incorrectly, please open this application in an entirely new browser window. If you are encountering errors in the console and/or a web page appears broken, there is a possibility that your browser isn't loading something correctly (peer-reviewing student submissions in Crowdgrader was a good example of this, as the browser would sometimes load a different JavaScript file than what was provided in the student's submission).
