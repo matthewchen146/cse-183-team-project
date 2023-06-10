@@ -13,6 +13,7 @@ export default {
   methods: {
     toggleCard() {
       this.info.isFront = !this.info.isFront;
+    
     },
     
   },
@@ -21,7 +22,7 @@ export default {
       this.info.isFront = true;
     }
     return {
-      cardUrl: `card/${this.info.id}`,
+      cardUrl: `edit/${this.info.deck_id}`,
     };
   },
   template: await loadHtml('./static/js/components/card-item-template.html')
