@@ -352,6 +352,18 @@ def add_card(deck_id=None):
         redirect(URL("edit", deck_id))
     return dict(form=form)
 
+# Delete the selected deck
+@action('delete/<deck_id:int>')
+@action.uses(db,  auth.user)
+def delete_card(deck_id=None):
+    assert deck_id is not None
+
+    d = db.deck[deck_id]
+    if d is None or d.user_id != auth.user_id:
+        redirect(URL("index"))
+    db(db.deck.id == deck_id).delete()
+    redirect(URL('index'))
+
 
 
 
