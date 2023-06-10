@@ -1,3 +1,4 @@
+import json
 from py4web import action, abort, redirect, request, URL
 from yatl.helpers import A
 from py4web.utils.form import Form, FormStyleBulma
@@ -44,6 +45,15 @@ def deck(deck_id):
 def decks():
     return dict(
         vue_root='./static/js/components/test.js'
+    )
+
+# The study page
+@action("study/<deck_id:int>")
+@action.uses("generic.html", auth)
+def study(deck_id):
+    return dict(
+        json_data=json.dumps(dict(deck_id=deck_id)),
+        vue_root='./static/js/components/study.js'
     )
 
 

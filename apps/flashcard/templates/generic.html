@@ -12,5 +12,25 @@ Root
 
 
 [[block page_scripts]]
+[[if 'json_data' in locals():]]
+<script>
+    // https://stackoverflow.com/questions/1912501/unescape-html-entities-in-javascript
+    function htmlDecode(input) {
+        const doc = new DOMParser().parseFromString(input, "text/html");
+        return doc.documentElement.textContent;
+    }
 
+    const serverData = {}
+    try {
+        Object.assign(serverData, JSON.parse(htmlDecode('[[=json_data]]')));
+    } catch (error) {
+        console.log("json parse server data error", error);
+    }
+    console.log("serverData", serverData)
+</script>
+[[else:]]
+<script>
+    const serverData = {}
+</script>
+[[pass]]
 [[end]]
