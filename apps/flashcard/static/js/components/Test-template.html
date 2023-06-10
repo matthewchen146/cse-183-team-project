@@ -47,10 +47,9 @@
   </div>
 
   <!-- Deck results, implemented as a custom Vue component. -->
-  <div v-for = "deck in decks">
-    <div v-if = "deck.is_favorite">
-    <deck-item  :info="deck" :key="deck.id" ></deck-item>
-    </div> 
-  </div>
+  
+    <deck-item v-for="deck in decks"  :info="deck" :key="deck.id" ></deck-item>
+
+  
 
 </div>

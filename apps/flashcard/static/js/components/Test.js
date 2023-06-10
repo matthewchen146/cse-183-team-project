@@ -17,6 +17,7 @@ export default await {
         return {
 
             decks: [],
+
             search: "",
             searchTimeout: undefined,
             searchTimeoutMs: 1000
@@ -28,6 +29,7 @@ export default await {
             try {
                 this.search = '';
                 this.getLibrary();
+                this.getMyDecks();
             } catch (error) {
                 console.error('clearSearch error:', error)
             }
@@ -51,6 +53,22 @@ export default await {
                 console.log(decks)
             } catch (error) {
                 console.error('getLibrary error:', error)
+            }
+        },
+        async getMyDecks() {
+            // Clear the search timeout just in case it is still active (such as when pressing enter).
+            clearTimeout(this.searchTimeout);
+            try {
+                
+                
+                const result = await axios.get('get_myDecks', {  });
+
+                // Process results for display.
+                this.myDecks = result.data.decks;
+                
+                
+            } catch (error) {
+                console.error('getMyDecks error:', error)
             }
         },
         processMode() {
@@ -80,6 +98,7 @@ export default await {
             this.searchTimeout = setTimeout(() => {
                 // When the timeout finishes, get decks with the current search string.
                 this.getLibrary();
+                this.getMyDecks();
             }, this.searchTimeoutMs);
         }
     },
@@ -90,6 +109,7 @@ export default await {
     mounted() {
         this.clearSearch();
         this.getLibrary();
+        this.getMyDecks();
         console.log(this.decks);
     },
     template: await loadHtml('./static/js/components/Test-template.html')
