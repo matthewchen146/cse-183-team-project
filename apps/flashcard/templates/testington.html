@@ -1,0 +1,64 @@
+
+
+<!-- deck.html -->
+[[extend 'layout.html']]
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Deck Title</title>
+  <!-- Add any necessary CSS or JavaScript files -->
+  <link rel="stylesheet" href="/static/css/styles.css">
+  
+</head>
+<body>
+  <p class="title">Deck name</p>
+  <div class="columns is-mobile">
+    <div class="column is-one-third">
+      <button class="button is-fullwidth is-light title is-4" style="background-color: #D8D8D8; "><strong>Studying</strong> </button>
+    </div>
+    <div class="column">
+      <button class="button is-fullwidth is-light title is-4" style="background-color: #D8D8D8;"><strong>View Stats</strong> </button>
+    </div>
+    <div class="column">
+      <button class="button is-fullwidth is-light title is-4" style="background-color: #D8D8D8;"><strong>Settings</strong></button>
+    </div>
+  </div>
+  <section>
+    <div class="container" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); grid-gap: 0.5em; 
+    height: 90vh;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    width: 100%; 
+  padding: 0 0.5em; 
+  box-sizing: border-box; 
+  padding-bottom: 1em;
+  padding-top: 1em;
+  ">
+      <card-item v-for="card in cards" :info="card" :key="deck.id" ></card-item>
+      
+      <!-- new add card-->
+      <div class="card">
+        
+        <div class="card-content">
+          <div class="content ">
+            <p class = "title has-text-centered">New Card</p>
+            <button class="button is-white is-large"><i class="fa fa-plus "></i></button>
+            
+            
+          </div>
+        </div>
+      
+      </div>	
+        
+        
+  </section>
+
+
+
+
+  <script>
+    // Define the Vue.js app and pass the deck data from the server
+    
+  </script>
+</body>
+</html>

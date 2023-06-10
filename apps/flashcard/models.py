@@ -85,6 +85,12 @@ db.define_table(
     Field("modified", "datetime", default=lambda: datetime.utcnow())
 )
 
+db.deck.user_id.writable = db.deck.user_id.readable = False
+db.deck.id.writable = db.deck.id.readable = False
+db.deck.author.writable = db.deck.author.readable = False
+db.deck.created.writable = db.deck.created.readable = False
+db.deck.modified.writable = db.deck.modified.readable = False
+
 # An individual card, with a front and back side.
 # Multiple cards make up a deck (many-to-one table).
 db.define_table(
@@ -94,6 +100,10 @@ db.define_table(
     Field("front", "string"),            # The content on the card's front.
     Field("back", "string"),             # The content on the card's back.
 )
+
+db.card.index.writable = db.card.index.readable = False
+db.card.id.writable = db.card.id.readable = False
+db.card.deck_id.writable = db.card.deck_id.readable = False
 
 # Users can mark cards with difficulties.
 db.define_table(
@@ -110,6 +120,9 @@ db.define_table(
     Field("deck_id", "reference deck"),
     Field("tag", "string")
 )
+
+db.tag.deck_id.writable = db.tag.deck_id.readable = False
+db.tag.id.writable = db.tag.id.readable = False
 
 # A user's favorite decks (many-to-many table).
 db.define_table(

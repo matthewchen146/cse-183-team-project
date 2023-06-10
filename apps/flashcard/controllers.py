@@ -1,5 +1,6 @@
 from py4web import action, abort, redirect, request, URL
 from yatl.helpers import A
+from py4web.utils.form import Form, FormStyleBulma
 from .common import auth, db, session
 
 
@@ -21,16 +22,19 @@ MAX_DECKS = 10
 @action.uses("generic.html", auth)
 def index():
     return dict(
+        
         vue_root='./static/js/components/home.js'
     )
 
 
 # The page to view an individual deck.
 @action("deck/<deck_id:int>")
-@action.uses("generic.html")
+@action.uses("generic.html", auth)
 def deck(deck_id):
     return dict(
-        vue_root='./static/js/components/deck.js'
+        deckId=deck_id,
+        vue_root='./static/js/components/view-deck.js',
+        
     )
 
 
@@ -179,3 +183,149 @@ def set_favorite():
         message='successfully toggled favorite',
         is_favorite=is_favorite
     )
+
+# Get cards to display.
+@action("get_cards", method="GET")
+@action.uses(auth, db)
+def get_cards(deck_id=None):
+    deck_id= request.query.get('deck_id')
+    print("fetching a deck with the ID ",deck_id)
+    # Make sure a valid deck ID is provided
+    
+
+    # Query the database for cards associated with the deck ID
+
+    deck = db(db.deck.id == deck_id).select().first()
+    cards = db(db.card.deck_id == deck_id).select().as_list()
+    for card in cards:
+        card['isFront'] = True
+        card["owner"] = bool(deck.user_id == auth.user_id)
+
+    
+    
+
+    # Return the cards as a dictionary
+    return dict(cards=cards)
+
+@action("get_deck", method="GET")
+@action.uses(auth, db)
+def get_deck(deck_id=None):
+    deck_id = request.query.get('deck_id')
+    print("fetching a deck with the ID", deck_id)
+
+    # Make sure a valid deck ID is provided
+
+    # Query the database for the deck
+    deck = db(db.deck.id == deck_id).select().first()
+
+    if deck:
+        # Check if the deck is favorited by the user
+        is_favorited = bool(
+            db(
+                (db.favorite.deck_id == deck.id) &
+                (db.favorite.user_id == auth.user_id)
+            ).count()
+        )
+        deck["is_favorited"] = is_favorited
+
+        print("deck user",deck.user_id)
+        print("auth",auth.user_id)
+        print()
+        deck["owner"] = bool(deck.user_id == auth.user_id)
+
+
+    
+
+    # Return the deck as a dictionary
+    return dict(deck=deck)
+
+
+
+# Edit the selected deck's title, description and public toggle
+# Also updates Save Status
+@action("edit/<deck_id:int>", method=['GET', 'POST'])
+@action.uses(db, session, auth.user, "edit.html")
+def edit_deck(deck_id=None):
+    assert deck_id is not None
+    d = db.deck[deck_id]
+    if d is None:
+        redirect(URL("index"))
+    status = "N/A"
+    form = Form(db.deck, record=d, deletable=False, csrf_session=session, formstyle=FormStyleBulma)
+    if form.accepted:
+        status = "Saved"
+    rows = db(db.card.deck_id == deck_id).select()
+    tag_rows = db(db.tag.deck_id == deck_id).select()
+    return dict(form=form, rows=rows, deck_id=deck_id, tag_rows=tag_rows, status=status)
+
+# Edit the selected tag
+@action("edit_tag/<deck_id:int>/<tag_id:int>", method=['GET', 'POST'])
+@action.uses(db, session, auth.user, "edit_tag.html")
+def edit_tag(deck_id=None, tag_id=None):
+    assert deck_id is not None
+    assert tag_id is not None
+    t = db.tag[tag_id]
+    tag_form = Form(db.tag, record=t, deletable=False, csrf_session=session, formstyle=FormStyleBulma)
+    if tag_form.accepted:
+        redirect(URL("edit", deck_id))
+    return dict(tag_form=tag_form)
+
+# Delete the selected tag
+@action('delete_tag/<deck_id:int>/<tag_id:int>')
+@action.uses(db, 'delete_tag.html', auth.user)
+def delete_tag(deck_id=None, tag_id=None):
+    assert deck_id is not None
+    assert tag_id is not None
+    db(db.tag.id == tag_id).delete()
+    redirect(URL('edit', deck_id))
+
+# Add a tag
+@action('add_tag/<deck_id:int>', method=["GET", "POST"])
+@action.uses(db, 'add_tag.html', auth.user)
+def add_tag(deck_id=None):
+    assert deck_id is not None
+    t = db.tag[deck_id]
+    form = Form(db.tag, record=t, deletable=False, csrf_session=session, formstyle=FormStyleBulma)
+    if form.accepted:
+        db.tag.insert(tag=form.vars['tag'], deck_id=deck_id)
+        redirect(URL("edit", deck_id))
+    return dict(form=form)
+
+# Edit the selected card's front and back
+@action('edit_card/<deck_id:int>/<card_id:int>', method=['GET', 'POST'])
+@action.uses(db, 'edit_card.html', auth.user)
+def edit_card(deck_id=None, card_id=None):
+    assert deck_id is not None
+    assert card_id is not None
+    c = db.card[card_id]
+    form = Form(db.card, record=c, deletable=False, csrf_session=session, formstyle=FormStyleBulma)
+    if form.accepted:
+        redirect(URL("edit", deck_id))
+    return dict(form=form)
+
+# Delete the selected card
+@action('delete_card/<deck_id:int>/<card_id:int>')
+@action.uses(db, 'delete_card.html', auth.user)
+def delete_card(deck_id=None, card_id=None):
+    assert deck_id is not None
+    assert card_id is not None
+    db(db.card.id == card_id).delete()
+    redirect(URL('edit', deck_id))
+
+# Add a card
+@action('add_card/<deck_id:int>', method=["GET", "POST"])
+@action.uses(db, 'add_card.html', auth.user)
+def add_card(deck_id=None):
+    assert deck_id is not None
+    d = db.card[deck_id]
+    form = Form(db.card, record=d, deletable=False, csrf_session=session, formstyle=FormStyleBulma)
+    if form.accepted:
+        db.card.insert(front=form.vars['front'], back=form.vars['back'], deck_id=deck_id)
+        redirect(URL("edit", deck_id))
+    return dict(form=form)
+
+
+
+
+
+

@@ -1,0 +1,42 @@
+.card{
+    display: flex;
+    flex-direction: column;
+    /* max-height: 30vh; */
+
+    .card-content{
+        flex-grow: 1;
+    }
+
+
+}
+.card:hover{
+    cursor: pointer;
+}
+
+.section{
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(281px, 1fr));
+    grid-template-rows: repeat(auto-fill, minmax(293px, 2fr));
+    
+    grid-gap: 0.5em; 
+    height: 90vh;
+    overflow-x: hidden;
+    grid-gap: 0.25em; 
+    overflow-y: scroll;
+    width: 100%; 
+    padding: 0 0.5em; 
+    box-sizing: border-box; 
+    padding-bottom: 1em;
+    padding-top: 1em;
+}
+
+    .dropdown-menu {
+        display: none;
+    } 
+
+.dropdown.is-fullwidth {
+    display: flex;
+    .dropdown-trigger,.dropdown-menu {
+        width: 100%;
+    }
+}

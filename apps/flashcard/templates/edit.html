@@ -1,0 +1,72 @@
+[[extend 'layout.html']]
+
+<div class="section">
+    <h1 class="title">Edit Deck</h1>
+    <span>
+        [[=form]]
+    </span>
+    
+    <div class="title">Edit Tags </div>
+    <table class="table is-fullwidth">
+      <tr>
+        <th>Tags</th>
+        <th></th>
+      </tr>
+      [[for row in tag_rows:]]
+      <tr>
+        <td>[[=row.tag]]</td>
+        <td>
+          <a class="button has-background-warning" href="[[=URL('edit_tag', deck_id, row.id)]]">
+            <i class="fa fa-edit"></i>
+          </a>
+          <a class="button has-background-danger has-text-white" href="[[=URL('delete_tag', deck_id, row.id)]]">
+            <i class="fa fa-trash"></i>
+          </a>
+      </td>
+      </tr>
+      [[pass]]
+    </table>
+
+    <a class="button has-background-primary has-text-white" href="[[=URL('add_tag', deck_id)]]">
+      <span class="icon"><i class="fa fa-plus"></i></span>
+      <span>Add Tag</span>
+    </a>
+
+    <div class="title">Edit Cards </div>
+    <table class="table is-fullwidth">
+        <tr>
+          <th>Front</th>
+          <th>Back</th>
+          <th></th>
+        </tr>
+        [[for row in rows:]]
+        <tr>
+          <td>[[=row.front]]</td>
+          <td>[[=row.back]]</td>
+          <td>
+            <a class="button has-background-warning" href="[[=URL('edit_card', deck_id, row.id)]]">
+              <i class="fa fa-edit"></i>
+            </a>
+            <a class="button has-background-danger has-text-white" href="[[=URL('delete_card', deck_id, row.id)]]">
+              <i class="fa fa-trash"></i>
+            </a>
+        </td>
+        </tr>
+        [[pass]]
+    </table>
+    
+    <a class="button has-background-primary has-text-white" href="[[=URL('add_card', deck_id)]]">
+      <span class="icon"><i class="fa fa-plus"></i></span>
+      <span>Add card</span>
+    </a>
+
+    
+    
+</div>
+<a class="button has-background-primary has-text-white" href="[[=URL('deck', deck_id)]]">
+  
+  <span>Back to Deck</span>
+</a>
+
+
+  

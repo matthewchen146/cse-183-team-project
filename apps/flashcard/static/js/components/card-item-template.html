@@ -1,0 +1,35 @@
+<!-- A single card to display -->
+<head>
+  <link rel="stylesheet" href="static/css/card.css">
+</head>
+
+<div class="card" >
+  <header class="card-header">
+    <p  v-if="info.isFront==true" class="card-header-title">
+      Card  {{ cardIndex + 1 }} front
+    </p>
+    <p  v-else class="card-header-title">
+      Card  {{ cardIndex + 1 }} back
+    </p>
+    
+  
+
+  </header>
+  <div @click= toggleCard() class="card-content" >
+    <div v-if="info.isFront == true" class="content">
+      {{info.front}}
+      
+    </div>
+    <div v-else class="content">
+      {{info.back}}
+      
+    </div>
+  </div>
+
+  <footer v-if="info.owner==true" class="card-footer">
+    <a :href="cardUrl" class="card-footer-item" style="color: blue">Edit</a>
+    
+  </footer>
+  
+  
+</div>

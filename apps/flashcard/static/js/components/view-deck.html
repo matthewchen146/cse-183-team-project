@@ -1,0 +1,79 @@
+
+
+<!-- view-deck.html -->
+
+<!DOCTYPE html>
+
+<head>
+  <title>Deck Title  </title>
+  
+    <link rel="stylesheet" href="static/css/card.css">
+  
+  <!-- Add any necessary CSS or JavaScript files -->
+  
+  
+</head>
+<body>
+  <a v-if="deck.is_favorited !== undefined" @click="toggleFavorite()">
+    <span class="icon is-small mr-2">
+      <i :class="'fa-' + (deck.is_favorited ? 'solid' : 'regular') + ' fa-star'"></i>
+    </span>
+  </a>
+  <p class="title"   >
+    Deck: {{deck.title}} </p>
+    <p class="subtitle"  >
+      By: {{deck.author}}
+    </p>
+  <div class="columns is-mobile">
+    <div class="column is-one-third">
+      <button class="button is-fullwidth is-light title is-4" style="background-color: #D8D8D8; "><strong>Studying</strong> </button>
+    </div>
+    <div class="column is-one-third ">
+      <button class="button is-fullwidth is-light title is-4" style="background-color: #D8D8D8;"><strong>View Stats</strong> </button>
+    </div>
+    <div class="column is-one-third">
+      <div v-if="deck.owner === true" class="dropdown  is-fullwidth" @click="toggleDropdown() ">
+        <div class="dropdown-trigger">
+          <button class="button is-fullwidth is-light title is-4" style="background-color: #D8D8D8;" aria-haspopup="true" aria-controls="dropdown-menu">
+            <strong>Settings</strong>
+          </button>
+        </div>
+        <div class="dropdown-menu" id="dropdown-menu" role="menu">
+          <div class="dropdown-content">
+            <a :href="editUrl" class="dropdown-item"  style="color:blue">Edit Deck</a>
+            <a href="#" class="dropdown-item"  style="color: red" >Delete Deck</a>
+          </div>
+        </div>
+      </div>
+      <button v-else class="button is-fullwidth is-light title is-4" style="background-color: #D8D8D8;" >
+        <strong>Settings</strong>
+      </button>
+    </div>
+  </div>
+  
+    <div class="section" >
+      <card-item  v-for="(card, index) in cards"  :info="card" :card-index="index" :key="card.id" ></card-item>
+      
+      <!-- new add card-->
+    
+      <div v-if="deck.owner===true" class="card">
+        
+        <div class="card-content">
+          <div class="content  " style="justify-content: center;">
+            <p class = "title has-text-centered">Add New Card</p>
+            <a :href="addCardUrl"> <button  :href="addCardUrl" class="button is-white is-large is-fullwidth"> <a :href="addCardUrl"><i  class="fa fa-plus "></i></a></button></a>
+            
+            
+          </div>
+        </div>
+      
+      </div>	  
+    </div>
+  
+
+
+
+
+
+</body>
+
