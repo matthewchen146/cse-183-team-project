@@ -25,13 +25,11 @@
       By: {{deck.author}}
     </p>
   <div class="columns is-mobile">
-    <div class="column is-one-third">
+    <div class="column is-half">
       <a :href="studyUrl" class="button is-fullwidth is-light title is-4" style="background-color: #D8D8D8; "><strong>Studying</strong> </a>
     </div>
-    <div class="column is-one-third ">
-      <a class="button is-fullwidth is-light title is-4" style="background-color: #D8D8D8;"><strong>View Stats</strong> </a>
-    </div>
-    <div class="column is-one-third">
+    
+    <div class="column is-half">
       <div v-if="deck.owner === true" class="dropdown  is-fullwidth" @click="toggleDropdown() ">
         <div class="dropdown-trigger">
           <button class="button is-fullwidth is-light title is-4" style="background-color: #D8D8D8;" aria-haspopup="true" aria-controls="dropdown-menu">
@@ -42,6 +40,19 @@
           <div class="dropdown-content">
             <a :href="editUrl" class="dropdown-item"  style="color:blue">Edit Deck</a>
             <a href="#" class="dropdown-item"  style="color: red" >Delete Deck</a>
+          </div>
+        </div>
+      </div>
+      <div  v-if="deck.owner !== true"  class="dropdown  is-fullwidth" @click="toggleDropdown() ">
+        <div class="dropdown-trigger">
+          <button class="button is-fullwidth is-light title is-4" style="background-color: #D8D8D8;" aria-haspopup="true" aria-controls="dropdown-menu">
+            <strong>Settings</strong>
+          </button>
+        </div>
+        <div class="dropdown-menu" id="dropdown-menu" role="menu">
+          <div class="dropdown-content">
+            <p  class="has-text-centered" style="color:red">You are not the owner of the deck</a>
+            
           </div>
         </div>
       </div>
