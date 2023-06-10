@@ -10,6 +10,10 @@ from py4web.utils.populate import FIRST_NAMES, LAST_NAMES, IUP
 from pydal.validators import *
 
 
+def get_user_id():
+    return auth.current_user.get('id') if auth.current_user else None
+
+
 def add_test_user_and_data():
     """
     A testing function that adds a user and test data.
@@ -76,7 +80,7 @@ def add_test_user_and_data():
 # A deck, with a title and description.
 db.define_table(
     "deck",
-    Field("user_id", "reference auth_user"),  # User ID.
+    Field("user_id", "reference auth_user", default=lambda: get_user_id),  # User ID.
     Field("author", "string"),                # Author username.
     Field("title", "string"),                 # The name of the deck.
     Field("description", "string"),           # A description of the deck.

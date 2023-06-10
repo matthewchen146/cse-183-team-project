@@ -1,1 +1,56 @@
-<button @click="count++">You clicked me {{ count }} times.</button>
+<div class="field">
+    <h2 class="title">Your Decks:</h2>
+
+    <a class="button has-background-primary has-text-white" href="add_deck">
+        <span class="icon"><i class="fa fa-plus"></i></span>
+        <span>Add Deck</span>
+    </a>
+
+  <!-- Search bar and associated buttons and menus. -->
+  <div class="field has-addons">
+    <!-- Search input bar. -->
+    <div class="control is-expanded">
+      <input class="input block" type="text" placeholder="Search..." v-model="search" v-on:keyup.enter="getLibrary()" @input="resetSearchTimeout()">
+    </div>
+    <div class="control">
+      <button class="button is-info" v-on:click="clearSearch()">
+        <span> X </span>
+      </button>
+    </div>
+    <div class="control">
+      <button class="button is-link" v-on:click="getLibrary()">
+        <span> Search </span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Checkboxoes for choosing search mode(s). -->
+  <div class="field is-grouped">
+    <div class="control">
+      <label class="button grey-lighter is-small">
+        <input type="checkbox" id="mode-author" v-on:click="getLibrary()">
+        <span class="ml-2">Authors</span>
+      </label>
+    </div>
+    <div class="control">
+      <label class="button grey-lighter is-small">
+        <input type="checkbox" id="mode-tag" v-on:click="getLibrary()">
+        <span class="ml-2">Tags</span>
+      </label>
+    </div>
+    <div class="control">
+      <label class="button grey-lighter is-small">
+        <input type="checkbox" id="mode-title" v-on:click="getLibrary()">
+        <span class="ml-2">Titles</span>
+      </label>
+    </div>
+  </div>
+
+  <!-- Deck results, implemented as a custom Vue component. -->
+  <div v-for = "deck in decks">
+    <div v-if = "deck.is_favorite">
+    <deck-item  :info="deck" :key="deck.id" ></deck-item>
+    </div> 
+  </div>
+
+</div>

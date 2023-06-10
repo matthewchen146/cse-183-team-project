@@ -364,7 +364,17 @@ def delete_card(deck_id=None):
     db(db.deck.id == deck_id).delete()
     redirect(URL('index'))
 
-
+#Add a deck
+@action('add_deck', method=["GET", "POST"])
+@action.uses(db, 'add_deck.html', auth.user, auth)
+def add_deck():
+    form = Form(db.deck, deletable=False, csrf_session=session, formstyle=FormStyleBulma)
+    if form.accepted:
+        db.deck.insert(user_id=auth.user_id)
+        db.commit()
+        deck_id = form.vars['id']
+        redirect(URL("edit", deck_id))
+    return dict(form=form)
 
 
 
