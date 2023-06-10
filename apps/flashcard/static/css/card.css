@@ -4,7 +4,7 @@
     /* max-height: 30vh; */
 
     .card-content{
-        flex-grow: 1;
+        min-height: 15em;
     }
 
 
